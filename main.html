@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WEFT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js"
+      defer
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "uttop-navy": "#004159",
+              "uttop-mint": "#5EDAD1",
+              "uttop-yellow": "#F5D547",
+              "uttop-pink": "#FF9BC2",
+              "uttop-purple": "#6665DD",
+            },
+            animation: {
+              "fade-in": "fadeIn 0.5s ease-in-out",
+              "slide-up": "slideUp 0.6s ease-in-out",
+              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              "bounce-slow": "bounce 3s infinite",
+              "scroll-x": "scrollX 25s linear infinite",
+            },
+            keyframes: {
+              fadeIn: {
+                "0%": { opacity: "0" },
+                "100%": { opacity: "1" },
+              },
+              slideUp: {
+                "0%": { transform: "translateY(20px)", opacity: "0" },
+                "100%": { transform: "translateY(0)", opacity: "1" },
+              },
+              scrollX: {
+                "0%": { transform: "translateX(0)" },
+                "100%": { transform: "translateX(-50%)" },
+              },
+            },
+          },
+        },
+      };
+      window.addEventListener("scroll", () => {
+        const navbar = document.querySelector("nav");
+        if (window.scrollY > 500) {
+          navbar.classList.add("scrolled");
+        } else {
+          navbar.classList.remove("scrolled");
+        }
+      });
+    </script>
+    <style>
+      @keyframes electron-orbit-1 {
+        0% {
+          transform: rotate(0deg) translateX(120px) translateY(0px) rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg) translateX(120px) translateY(0px)
+            rotate(-360deg);
+        }
+      }
+
+      @keyframes electron-orbit-2 {
+        0% {
+          transform: rotate(0deg) translateX(100px) translateY(80px)
+            rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg) translateX(100px) translateY(80px)
+            rotate(-360deg);
+        }
+      }
+
+      @keyframes electron-orbit-3 {
+        0% {
+          transform: rotate(0deg) translateX(-120px) translateY(60px)
+            rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg) translateX(-120px) translateY(60px)
+            rotate(-360deg);
+        }
+      }
+
+      @keyframes electron-orbit-4 {
+        0% {
+          transform: rotate(0deg) translateX(20px) translateY(-140px)
+            rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg) translateX(20px) translateY(-140px)
+            rotate(-360deg);
+        }
+      }
+
+      .animate-electron-1 {
+        animation: electron-orbit-1 6s linear infinite;
+      }
+      .animate-electron-2 {
+        animation: electron-orbit-2 8s linear infinite;
+        animation-delay: 1s;
+      }
+      .animate-electron-3 {
+        animation: electron-orbit-3 10s linear infinite reverse;
+        animation-delay: 2s;
+      }
+      .animate-electron-4 {
+        animation: electron-orbit-4 12s linear infinite reverse;
+        animation-delay: 3s;
+      }
+
+      .relative-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      nav.bg-uttop-navy {
+        background-color: #004159;
+      }
+
+      nav.scrolled {
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      nav.scrolled a {
+        color: #004159;
+      }
+
+      nav.scrolled a:hover {
+        color: #5edad1;
+      }
+
+      #carouselTrack {
+        transition: transform 0.5s ease-in-out;
+      }
+
+      #prevBtn,
+      #nextBtn {
+        cursor: pointer;
+      }
+
+      #prevBtn {
+        left: -2rem;
+      }
+
+      #nextBtn {
+        right: -2rem;
+      }
+      .animate-delay-100 {
+        animation-delay: 100ms;
+      }
+      .animate-delay-200 {
+        animation-delay: 200ms;
+      }
+      .animate-delay-300 {
+        animation-delay: 300ms;
+      }
+      .animate-delay-400 {
+        animation-delay: 400ms;
+      }
+      .animate-delay-500 {
+        animation-delay: 500ms;
+      }
+
+      .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(0, 65, 89, 0.1);
+      }
+
+      .scroll-container {
+        display: inline-flex;
+        animation: scrollX 25s linear infinite;
+      }
+
+      @keyframes scrollX {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+
+      .scroll-pause:hover .scroll-container {
+        animation-play-state: paused;
+      }
+
+      .carousel-container {
+        overflow: hidden;
+        position: relative;
+      }
+
+      .carousel-track {
+        display: flex;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .carousel-item {
+        flex-shrink: 0;
+        padding: 0.5rem;
+      }
+
+      .indicator-active {
+        transform: scale(1.5);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .team-card {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+
+      .social-icon {
+        transition: all 0.3s ease;
+      }
+
+      .social-icon:hover {
+        transform: translateY(-3px);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <nav class="bg-uttop-navy shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+            
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <span class="text-white text-2xl font-bold">WEFT</span>
+              </div>
+              
+              
+              <div class="hidden md:flex md:items-center md:ml-8 md:space-x-4">
+                <a href="#home" class="text-white hover:text-uttop-mint px-3 py-2 text-sm font-medium">Home</a>
+                <a href="#about" class="text-gray-200 hover:text-uttop-mint px-3 py-2 text-sm font-medium">About</a>
+                
+                
+                <div class="relative group">
+                  <a href="#research" class="text-white hover:text-uttop-mint px-3 py-2 text-sm font-medium inline-flex items-center">
+                    Research
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </a>
+                  <div class="absolute left-0 w-48 mt-2 origin-top-right bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-300">
+                    <div class="py-1">
+                      <a href="#projects" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Projects</a>
+                      <a href="#publications" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Publications</a>
+                    </div>
+                  </div>
+                </div>
+                
+                <a href="#team" class="text-gray-200 hover:text-uttop-mint px-3 py-2 text-sm font-medium">Team</a>
+                <a href="#contact" class="text-gray-200 hover:text-uttop-mint px-3 py-2 text-sm font-medium">Contact</a>
+              </div>
+            </div>
+            
+            
+            <div class="hidden md:flex md:items-center">
+              <a href="Login.html" class="text-gray-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Sign In</a>
+              <a href="Signup.html" class="ml-3 bg-uttop-mint hover:bg-opacity-90 text-uttop-navy px-4 py-2 rounded-md text-sm font-medium">Sign Up</a>
+            </div>
+            
+            
+            <div class="flex items-center md:hidden">
+              <a  id="mobile-menu-button" class="text-gray-200 hover:text-white focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </a>
+            </div>
+          </div>
+        </div>
+      
+        
+        <div id="mobile-menu" class="hidden md:hidden">
+          <div class="px-2 pt-2 pb-3 space-y-1">
+            <a href="#home" class="text-white hover:text-uttop-mint block px-3 py-2 text-base font-medium">Home</a>
+            <a href="#about" class="text-gray-200 hover:text-uttop-mint block px-3 py-2 text-base font-medium">About</a>
+            
+            
+            <div class="relative">
+              <a id="research-dropdown-button" class="text-white hover:text-uttop-mint w-full text-left px-3 py-2 text-base font-medium flex justify-between items-center">
+                Research
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div id="research-dropdown" class="hidden px-4 py-2">
+                <a href="#projects" class="block px-3 py-2 text-base text-gray-200 hover:text-uttop-mint">Projects</a>
+                <a href="#publications" class="block px-3 py-2 text-base text-gray-200 hover:text-uttop-mint">Publications</a>
+              </div>
+            </div>
+            
+            <a href="#team" class="text-gray-200 hover:text-uttop-mint block px-3 py-2 text-base font-medium">Team</a>
+            <a href="#contact" class="text-gray-200 hover:text-uttop-mint block px-3 py-2 text-base font-medium">Contact</a>
+            
+            
+            <div class="pt-4 pb-3 border-t border-gray-700">
+              <a href="#signin" class="block text-gray-200 hover:text-white px-3 py-2 text-base font-medium">Sign In</a>
+              <a href="#signup" class="block mt-1 bg-uttop-mint hover:bg-opacity-90 text-uttop-navy px-4 py-2 rounded-md text-base font-medium">Sign Up</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      
+    
+    <div id="home" class="relative bg-uttop-navy overflow-hidden">
+      <div class="max-w-7xl mx-auto">
+        <div
+          class="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:w-full lg:pb-28 xl:pb-32"
+        >
+          <main
+            class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28"
+          >
+            <div class="sm:text-center lg:text-left">
+              <h1
+                class="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl"
+              >
+                <span class="block">Welcome to WEFT</span>
+                <span class="block text-uttop-mint"
+                  >Research Project Portal</span
+                >
+              </h1>
+              <p
+                class="mt-3 text-base text-gray-300 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0"
+              >
+                Showcasing innovative research from UTTOP and LGP laboratories
+              </p>
+              <div
+                class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start"
+              >
+                <div class="rounded-md shadow">
+                  <a
+                    href="#about"
+                    class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-uttop-navy bg-uttop-mint hover:bg-uttop-yellow md:py-4 md:text-lg md:px-10"
+                  >
+                    Learn More
+                  </a>
+                </div>
+                <div class="mt-3 sm:mt-0 sm:ml-3">
+                  <a
+                    href="#contact"
+                    class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-uttop-purple hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
+                  >
+                    Contact Us
+                  </a>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+      <div class="hidden lg:block lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+        <div
+          class="h-56 w-full bg-uttop-navy sm:h-72 md:h-96 lg:w-full lg:h-full"
+        >
+          <div class="w-full h-full flex items-center justify-center relative">
+            <div
+              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            >
+              <div
+                class="absolute w-32 h-32 bg-uttop-mint rounded-lg animate-electron-1"
+              ></div>
+              <div
+                class="absolute w-32 h-32 bg-uttop-yellow rounded-lg animate-electron-2"
+              ></div>
+              <div
+                class="absolute w-32 h-32 bg-uttop-pink rounded-lg animate-electron-3"
+              ></div>
+              <div
+                class="absolute w-32 h-32 bg-uttop-purple rounded-lg animate-electron-4"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="about" class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="lg:text-center">
+          <h2
+            class="text-base text-uttop-purple font-semibold tracking-wide uppercase"
+          >
+            About Our Project
+          </h2>
+          <p
+            class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-uttop-navy sm:text-4xl"
+          >
+            Advancing Research Through Collaboration
+          </p>
+          <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+            WEFT serves as a platform to showcase groundbreaking research
+            projects from the UTTOP and LGP laboratories.
+          </p>
+        </div>
+
+        <div class="mt-10">
+          <div
+            class="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10"
+          >
+            <div class="relative">
+              <div
+                class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-uttop-mint text-white"
+              >
+                <svg
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                  />
+                </svg>
+              </div>
+              <div class="ml-16">
+                <h3 class="text-lg leading-6 font-medium text-uttop-navy">
+                  Innovation Hub
+                </h3>
+                <p class="mt-2 text-base text-gray-500">
+                  Providing a central repository for showcasing innovative
+                  research methodologies and findings.
+                </p>
+              </div>
+            </div>
+
+            <div class="relative">
+              <div
+                class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-uttop-yellow text-white"
+              >
+                <svg
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"
+                  />
+                </svg>
+              </div>
+              <div class="ml-16">
+                <h3 class="text-lg leading-6 font-medium text-uttop-navy">
+                  Collaborative Environment
+                </h3>
+                <p class="mt-2 text-base text-gray-500">
+                  Fostering collaboration between researchers, faculty, and
+                  industry partners.
+                </p>
+              </div>
+            </div>
+
+            <div class="relative">
+              <div
+                class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-uttop-pink text-white"
+              >
+                <svg
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+              </div>
+              <div class="ml-16">
+                <h3 class="text-lg leading-6 font-medium text-uttop-navy">
+                  Knowledge Sharing
+                </h3>
+                <p class="mt-2 text-base text-gray-500">
+                  Facilitating the exchange of ideas and methodologies across
+                  different research disciplines.
+                </p>
+              </div>
+            </div>
+
+            <div class="relative">
+              <div
+                class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-uttop-purple text-white"
+              >
+                <svg
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                  />
+                </svg>
+              </div>
+              <div class="ml-16">
+                <h3 class="text-lg leading-6 font-medium text-uttop-navy">
+                  Public Engagement
+                </h3>
+                <p class="mt-2 text-base text-gray-500">
+                  Making research accessible to a wider audience through clear
+                  communication and visualization.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="lg:text-center">
+          <h2
+            class="text-base text-uttop-purple font-semibold tracking-wide uppercase"
+          >
+            Our Mission
+          </h2>
+          <p
+            class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-uttop-navy sm:text-4xl"
+          >
+            Bridging Research and Impact
+          </p>
+        </div>
+        <div class="mt-10">
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="px-6 py-8 sm:p-10 sm:pb-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 class="text-xl font-medium text-uttop-navy">Vision</h3>
+                  <p class="mt-4 text-gray-500">
+                    To become a leading platform for research dissemination and
+                    collaboration, connecting academics, industry partners, and
+                    the public with cutting-edge research from UTTOP and LGP.
+                  </p>
+                </div>
+                <div>
+                  <h3 class="text-xl font-medium text-uttop-navy">Values</h3>
+                  <ul class="mt-4 space-y-2 text-gray-500">
+                    <li class="flex items-start">
+                      <span class="h-6 flex items-center sm:h-7">
+                        <svg
+                          class="flex-shrink-0 h-5 w-5 text-uttop-mint"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </span>
+                      <p class="ml-2">
+                        Innovation and creativity in research approaches
+                      </p>
+                    </li>
+                    <li class="flex items-start">
+                      <span class="h-6 flex items-center sm:h-7">
+                        <svg
+                          class="flex-shrink-0 h-5 w-5 text-uttop-mint"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </span>
+                      <p class="ml-2">
+                        Transparency and accessibility of research findings
+                      </p>
+                    </li>
+                    <li class="flex items-start">
+                      <span class="h-6 flex items-center sm:h-7">
+                        <svg
+                          class="flex-shrink-0 h-5 w-5 text-uttop-mint"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </span>
+                      <p class="ml-2">
+                        Collaboration across disciplines and institutions
+                      </p>
+                    </li>
+                    <li class="flex items-start">
+                      <span class="h-6 flex items-center sm:h-7">
+                        <svg
+                          class="flex-shrink-0 h-5 w-5 text-uttop-mint"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </span>
+                      <p class="ml-2">
+                        Excellence in scientific methodology and integrity
+                      </p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="research" class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="lg:text-center">
+          <h2
+            class="text-base text-uttop-purple font-semibold tracking-wide uppercase"
+          >
+            Research Areas
+          </h2>
+          <p
+            class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-uttop-navy sm:text-4xl"
+          >
+            Exploring New Frontiers
+          </p>
+          <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+            Our researchers are working on cutting-edge projects across various
+            domains.
+          </p>
+        </div>
+
+        <div
+          class="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          <div
+            class="group relative bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300"
+          >
+            <div class="h-2 bg-uttop-mint"></div>
+            <div class="p-6">
+              <h3 class="text-lg font-medium text-uttop-navy">
+                Materials Science
+              </h3>
+              <p class="mt-3 text-base text-gray-500">
+                Developing novel materials with enhanced properties for
+                industrial applications.
+              </p>
+              <a
+                href="#"
+                class="mt-4 inline-flex items-center text-sm font-medium text-uttop-mint"
+              >
+                Learn more
+                <svg
+                  class="ml-2 w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="group relative bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300"
+          >
+            <div class="h-2 bg-uttop-yellow"></div>
+            <div class="p-6">
+              <h3 class="text-lg font-medium text-uttop-navy">
+                Sustainable Engineering
+              </h3>
+              <p class="mt-3 text-base text-gray-500">
+                Creating environmentally friendly solutions for engineering
+                challenges.
+              </p>
+              <a
+                href="#"
+                class="mt-4 inline-flex items-center text-sm font-medium text-uttop-yellow"
+              >
+                Learn more
+                <svg
+                  class="ml-2 w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="group relative bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300"
+          >
+            <div class="h-2 bg-uttop-pink"></div>
+            <div class="p-6">
+              <h3 class="text-lg font-medium text-uttop-navy">
+                Smart Manufacturing
+              </h3>
+              <p class="mt-3 text-base text-gray-500">
+                Integrating digital technologies into manufacturing processes
+                for improved efficiency.
+              </p>
+              <a
+                href="#"
+                class="mt-4 inline-flex items-center text-sm font-medium text-uttop-pink"
+              >
+                Learn more
+                <svg
+                  class="ml-2 w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="group relative bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300"
+          >
+            <div class="h-2 bg-uttop-purple"></div>
+            <div class="p-6">
+              <h3 class="text-lg font-medium text-uttop-navy">
+                Robotics & Automation
+              </h3>
+              <p class="mt-3 text-base text-gray-500">
+                Developing autonomous systems for complex industrial tasks.
+              </p>
+              <a
+                href="#"
+                class="mt-4 inline-flex items-center text-sm font-medium text-uttop-purple"
+              >
+                Learn more
+                <svg
+                  class="ml-2 w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="group relative bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300"
+          >
+            <div class="h-2 bg-uttop-mint"></div>
+            <div class="p-6">
+              <h3 class="text-lg font-medium text-uttop-navy">
+                Energy Systems
+              </h3>
+              <p class="mt-3 text-base text-gray-500">
+                Optimizing energy production, storage, and distribution for a
+                sustainable future.
+              </p>
+              <a
+                href="#"
+                class="mt-4 inline-flex items-center text-sm font-medium text-uttop-mint"
+              >
+                Learn more
+                <svg
+                  class="ml-2 w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="group relative bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300"
+          >
+            <div class="h-2 bg-uttop-yellow"></div>
+            <div class="p-6">
+              <h3 class="text-lg font-medium text-uttop-navy">Digital Twins</h3>
+              <p class="mt-3 text-base text-gray-500">
+                Creating virtual replicas of physical assets to improve design
+                and operation.
+              </p>
+              <a
+                href="#"
+                class="mt-4 inline-flex items-center text-sm font-medium text-uttop-yellow"
+              >
+                Learn more
+                <svg
+                  class="ml-2 w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+
+    <section id="projects" class="py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="lg:text-center">
+          <h2
+            class="text-base text-uttop-purple font-semibold tracking-wide uppercase reveal"
+          >
+            Our Projects
+          </h2>
+          <p
+            class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-uttop-navy sm:text-4xl reveal"
+          >
+            Cutting-Edge Innovations
+          </p>
+          <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto reveal">
+            Explore our flagship projects driving advancements in various
+            fields.
+          </p>
+        </div>
+
+        <div
+          class="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          
+          <div
+            class="group relative bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 card-hover reveal"
+          >
+            <div class="h-2 bg-uttop-mint"></div>
+            <div class="p-6">
+              <div class="flex items-center mb-4">
+                <div class="bg-uttop-mint bg-opacity-20 p-3 rounded-full">
+                  <svg
+                    class="w-6 h-6 text-uttop-mint"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    ></path>
+                  </svg>
+                </div>
+                <h3 class="ml-4 text-lg font-medium text-uttop-navy">
+                  Project Synthesis
+                </h3>
+              </div>
+              <p class="text-base text-gray-500">
+                Developing novel data integration techniques using advanced weft
+                technology.
+              </p>
+              <div class="mt-4 flex items-center justify-between">
+                <div>
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-mint bg-opacity-20 text-uttop-navy"
+                  >
+                    Technology
+                  </span>
+                </div>
+                <div class="flex -space-x-2">
+                  <img
+                    class="w-6 h-6 rounded-full ring-2 ring-white"
+                    src="assets/img/avatar/1.png"
+                    alt="Contributor 1"
+                  />
+                  <img
+                    class="w-6 h-6 rounded-full ring-2 ring-white"
+                    src="assets/img/avatar/10.png"
+                    alt="Contributor 2"
+                  />
+                  <img
+                    class="w-6 h-6 rounded-full ring-2 ring-white"
+                    src="assets/img/avatar/12.png"
+                    alt="Contributor 3"
+                  />
+                </div>
+              </div>
+              <a
+                href="#"
+                class="mt-6 inline-flex items-center text-sm font-medium text-uttop-mint group-hover:text-uttop-navy transition-colors duration-300"
+              >
+                Learn more
+                <svg
+                  class="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          
+          <div
+            class="group relative bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 card-hover reveal"
+          >
+            <div class="h-2 bg-uttop-yellow"></div>
+            <div class="p-6">
+              <div class="flex items-center mb-4">
+                <div class="bg-uttop-yellow bg-opacity-20 p-3 rounded-full">
+                  <svg
+                    class="w-6 h-6 text-uttop-yellow"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    ></path>
+                  </svg>
+                </div>
+                <h3 class="ml-4 text-lg font-medium text-uttop-navy">
+                  Weft Connect
+                </h3>
+              </div>
+              <p class="text-base text-gray-500">
+                Connecting communities through innovative mesh networks and
+                infrastructure.
+              </p>
+              <div class="mt-4 flex items-center justify-between">
+                <div>
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-yellow bg-opacity-20 text-uttop-navy"
+                  >
+                    Community
+                  </span>
+                </div>
+                <div class="flex -space-x-2">
+                  <img
+                    class="w-6 h-6 rounded-full ring-2 ring-white"
+                    src="assets/img/avatar/1.png"
+                    alt="Contributor 1"
+                  />
+                  <img
+                    class="w-6 h-6 rounded-full ring-2 ring-white"
+                    src="assets/img/avatar/10.png"
+                    alt="Contributor 2"
+                  />
+                  <img
+                    class="w-6 h-6 rounded-full ring-2 ring-white"
+                    src="assets/img/avatar/12.png"
+                    alt="Contributor 3"
+                  />
+                  <span
+                    class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 ring-2 ring-white text-xs text-gray-500"
+                    >+2</span
+                  >
+                </div>
+              </div>
+              <a
+                href="#"
+                class="mt-6 inline-flex items-center text-sm font-medium text-uttop-yellow group-hover:text-uttop-navy transition-colors duration-300"
+              >
+                Learn more
+                <svg
+                  class="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          
+          <div
+            class="group relative bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 card-hover reveal"
+          >
+            <div class="h-2 bg-uttop-pink"></div>
+            <div class="p-6">
+              <div class="flex items-center mb-4">
+                <div class="bg-uttop-pink bg-opacity-20 p-3 rounded-full">
+                  <svg
+                    class="w-6 h-6 text-uttop-pink"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                </div>
+                <h3 class="ml-4 text-lg font-medium text-uttop-navy">
+                  EcoWeft
+                </h3>
+              </div>
+              <p class="text-base text-gray-500">
+                Sustainable solutions for environmental monitoring and
+                conservation efforts.
+              </p>
+              <div class="mt-4 flex items-center justify-between">
+                <div>
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-pink bg-opacity-20 text-uttop-navy"
+                  >
+                    Sustainability
+                  </span>
+                </div>
+                <div class="flex -space-x-2">
+                  <img
+                    class="w-6 h-6 rounded-full ring-2 ring-white"
+                    src="/api/placeholder/24/24"
+                    alt="Contributor 1"
+                  />
+                  <img
+                    class="w-6 h-6 rounded-full ring-2 ring-white"
+                    src="/api/placeholder/24/24"
+                    alt="Contributor 2"
+                  />
+                  <img
+                    class="w-6 h-6 rounded-full ring-2 ring-white"
+                    src="/api/placeholder/24/24"
+                    alt="Contributor 3"
+                  />
+                  <span
+                    class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 ring-2 ring-white text-xs text-gray-500"
+                    >+3</span
+                  >
+                </div>
+              </div>
+              <a
+                href="#"
+                class="mt-6 inline-flex items-center text-sm font-medium text-uttop-pink group-hover:text-uttop-navy transition-colors duration-300"
+              >
+                Learn more
+                <svg
+                  class="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-12 reveal">
+          <a
+            href="#"
+            class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-uttop-navy hover:bg-uttop-purple transition-colors duration-300"
+          >
+            View All Projects
+            <svg
+              class="ml-2 w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    
+    <section id="publications" class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="lg:text-center">
+          <h2
+            class="text-base text-uttop-purple font-semibold tracking-wide uppercase reveal"
+          >
+            Publications
+          </h2>
+          <p
+            class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-uttop-navy sm:text-4xl reveal"
+          >
+            Our Research Insights
+          </p>
+          <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto reveal">
+            Explore our latest research publications and scholarly articles.
+          </p>
+        </div>
+
+        <div class="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div
+            class="bg-gray-50 rounded-lg p-6 shadow-sm border-l-4 border-uttop-mint transform transition duration-300 hover:shadow-md hover:translate-x-1 reveal h-full"
+          >
+            <div class="flex flex-col h-full">
+              <div class="flex-grow">
+                <h3 class="text-xl font-bold text-uttop-navy">
+                  Advanced Weft Techniques for Modern Applications
+                </h3>
+                <p class="mt-2 text-sm text-gray-500 flex items-center">
+                  <svg
+                    class="mr-1.5 h-4 w-4 text-uttop-mint"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  Published in  2024
+                </p>
+                <p class="mt-3 text-gray-600">
+                  This paper explores the innovative applications of weft
+                  technology in various domains including healthcare,
+                  manufacturing, and environmental monitoring.
+                </p>
+
+                <div class="mt-4 flex flex-wrap gap-2">
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-mint bg-opacity-20 text-uttop-navy"
+                  >
+                    Research
+                  </span>
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-yellow bg-opacity-20 text-uttop-navy"
+                  >
+                    Technology
+                  </span>
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-pink bg-opacity-20 text-uttop-navy"
+                  >
+                    Innovation
+                  </span>
+                </div>
+              </div>
+              <div class="mt-6 flex justify-between items-center">
+                <div class="flex -space-x-2">
+                  <img
+                    class="w-8 h-8 rounded-full ring-2 ring-white"
+                    src="assets/img/avatar/1.png"
+                    alt="Author: Dr. Sophie Martin"
+                  />
+                  <img
+                    class="w-8 h-8 rounded-full ring-2 ring-white"
+                    src="assets/img/avatar/10.png"
+                    alt="Author: Prof. Jean Dubois"
+                  />
+                  <img
+                    class="w-8 h-8 rounded-full ring-2 ring-white"
+                    src="assets/img/avatar/11.png"
+                    alt="Author: Dr. Marie Laurent"
+                  />
+                </div>
+                <a
+                  href="#"
+                  class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-uttop-navy bg-uttop-mint bg-opacity-20 hover:bg-opacity-30 transition-colors duration-300"
+                >
+                  Read Publication
+                  <svg
+                    class="ml-2 -mr-0.5 h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center mt-12 reveal">
+          <a
+            href="#"
+            class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-uttop-navy hover:bg-uttop-purple transition-colors duration-300"
+          >
+            View All Publications
+            <svg
+              class="ml-2 w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+    <section class="bg-gray-50 py-10 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+        <div class="lg:text-center">
+          <h2
+            class="text-base text-uttop-purple font-semibold tracking-wide uppercase"
+          >
+            Our Partners
+          </h2>
+          <p
+            class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-uttop-navy sm:text-4xl"
+          >
+            Collaborating for Innovation
+          </p>
+          <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+            Working alongside leading organizations to drive research and
+            development.
+          </p>
+        </div>
+      </div>
+
+      <div class="relative overflow-hidden scroll-pause">
+        <div class="scroll-container">
+          
+          <div class="flex items-center space-x-12 px-4">
+            <div
+              class="h-16 w-40 bg-white rounded-lg flex items-center justify-center shadow-sm p-2"
+            >
+              <div class="w-full h-full relative overflow-hidden">
+                <img
+                  src="./assets/img/partner/RegionOccitanie.png"
+                  class="w-full h-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                  alt="Region Occitanie"
+                />
+              </div>
+            </div>
+            <div
+              class="h-16 w-40 bg-white rounded-lg flex items-center justify-center shadow-sm p-2"
+            >
+              <div class="w-full h-full relative overflow-hidden">
+                <img
+                  src="./assets/img/partner/erasmus-logo-1.png"
+                  class="w-full h-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                  alt="Erasmus"
+                />
+              </div>
+            </div>
+            <div
+              class="h-16 w-40 bg-white rounded-lg flex items-center justify-center shadow-sm p-2"
+            >
+              <div class="w-full h-full relative overflow-hidden">
+                <img
+                  src="./assets/img/partner/cti.png"
+                  class="w-full h-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                  alt="Cti"
+                />
+              </div>
+            </div>
+            <div
+              class="h-16 w-40 bg-white rounded-lg flex items-center justify-center shadow-sm p-2"
+            >
+              <div class="w-full h-full relative overflow-hidden">
+                <img
+                  src="./assets/img/partner/UTolouse.png"
+                  class="w-full h-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                  alt="UTolouse"
+                />
+              </div>
+            </div>
+            <div
+              class="h-16 w-40 bg-white rounded-lg flex items-center justify-center shadow-sm p-2"
+            >
+              <div class="w-full h-full relative overflow-hidden">
+                <img
+                  src="./assets/img/partner/cdefi.png"
+                  class="w-full h-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                  alt="cdefi"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-12 px-4">
+            <div
+              class="h-16 w-40 bg-white rounded-lg flex items-center justify-center shadow-sm p-2"
+            >
+              <div class="w-full h-full relative overflow-hidden">
+                <img
+                  src="./assets/img/partner/RegionOccitanie.png"
+                  class="w-full h-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                  alt="Region Occitanie"
+                />
+              </div>
+            </div>
+            <div
+              class="h-16 w-40 bg-white rounded-lg flex items-center justify-center shadow-sm p-2"
+            >
+              <div class="w-full h-full relative overflow-hidden">
+                <img
+                  src="./assets/img/partner/erasmus-logo-1.png"
+                  class="w-full h-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                  alt="Erasmus"
+                />
+              </div>
+            </div>
+            <div
+              class="h-16 w-40 bg-white rounded-lg flex items-center justify-center shadow-sm p-2"
+            >
+              <div class="w-full h-full relative overflow-hidden">
+                <img
+                  src="./assets/img/partner/cti.png"
+                  class="w-full h-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                  alt="Cti"
+                />
+              </div>
+            </div>
+            <div
+              class="h-16 w-40 bg-white rounded-lg flex items-center justify-center shadow-sm p-2"
+            >
+              <div class="w-full h-full relative overflow-hidden">
+                <img
+                  src="./assets/img/partner/UTolouse.png"
+                  class="w-full h-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                  alt="UTolouse"
+                />
+              </div>
+            </div>
+            <div
+              class="h-16 w-40 bg-white rounded-lg flex items-center justify-center shadow-sm p-2"
+            >
+              <div class="w-full h-full relative overflow-hidden">
+                <img
+                  src="./assets/img/partner/cdefi.png"
+                  class="w-full h-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                  alt="cdefi"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-white to-transparent"
+        ></div>
+        <div
+          class="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-white to-transparent"
+        ></div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 text-center">
+        <p class="text-sm text-gray-500">
+          Hover to pause the scrolling • Interested in partnership?
+          <a href="#" class="text-uttop-purple font-medium hover:underline"
+            >Contact us</a
+          >
+        </p>
+      </div>
+    </section>
+
+    <section id="team" class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="lg:text-center">
+          <h2
+            class="text-base text-uttop-purple font-semibold tracking-wide uppercase"
+          >
+            Our Team
+          </h2>
+          <p
+            class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-uttop-navy sm:text-4xl"
+          >
+            Meet the Researchers
+          </p>
+          <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+            Our talented team of researchers driving innovation and discovery.
+          </p>
+        </div>
+
+        <div x-data="teamCarousel()" x-init="init()" class="relative">
+          <div class="carousel-container">
+            <div
+              class="carousel-track"
+              :style="`transform: translateX(-${currentIndex * 100}%);`"
+            >
+              <template x-for="(_, slideIndex) in slides" :key="slideIndex">
+                <div
+                  class="carousel-item w-full flex justify-center"
+                  :style="`width: 100%`"
+                >
+                  <div
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
+                  >
+                    <template
+                      x-for="(member, memberIndex) in getSlideMembers(slideIndex)"
+                      :key="memberIndex"
+                    >
+                      <div
+                        class="team-card rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1"
+                      >
+                        <div :class="`bg-${member.bgColor}-50 p-6 rounded-lg`">
+                          <div
+                            class="w-32 h-32 rounded-full overflow-hidden mx-auto mb-4 border-4 border-white shadow-lg"
+                          >
+                            <img
+                              src="./assets/img/avatar/1.png"
+                              :alt="member.name"
+                              class="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div class="text-center">
+                            <h3
+                              class="text-lg font-medium text-gray-900"
+                              x-text="member.name"
+                            ></h3>
+                            <p
+                              class="text-sm text-indigo-600 mb-3"
+                              x-text="member.role"
+                            ></p>
+                            <div class="flex justify-center space-x-4 mt-3">
+                              <template
+                                x-for="(link, linkIndex) in member.socialLinks"
+                                :key="linkIndex"
+                              >
+                                <a
+                                  href="#"
+                                  class="social-icon text-gray-600 hover:text-indigo-600"
+                                >
+                                  <i :class="`fab fa-${link} fa-lg`"></i>
+                                </a>
+                              </template>
+                              <template x-if="member.hasPersonalSite">
+                                <a
+                                  href="#"
+                                  class="social-icon text-gray-600 hover:text-indigo-600"
+                                >
+                                  <i class="fas fa-globe fa-lg"></i>
+                                </a>
+                              </template>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <button
+            @click="prevSlide()"
+            class="absolute left-0 top-1/2 -translate-y-1/2 bg-white hover:bg-indigo-100 rounded-full p-3 ml-2 shadow-lg transition-all duration-300 focus:outline-none z-10 opacity-75 hover:opacity-100 transform hover:scale-110"
+          >
+            <i class="fas fa-chevron-left text-indigo-600"></i>
+          </button>
+          <button
+            @click="nextSlide()"
+            class="absolute right-0 top-1/2 -translate-y-1/2 bg-white hover:bg-indigo-100 rounded-full p-3 mr-2 shadow-lg transition-all duration-300 focus:outline-none z-10 opacity-75 hover:opacity-100 transform hover:scale-110"
+          >
+            <i class="fas fa-chevron-right text-indigo-600"></i>
+          </button>
+
+          <div class="flex justify-center mt-8">
+            <template x-for="(_, index) in slides" :key="index">
+              <button
+                @click="goToSlide(index)"
+                class="h-3 w-3 mx-2 rounded-full focus:outline-none transition-all duration-300"
+                :class="{ 'bg-indigo-600 indicator-active': currentIndex === index, 'bg-gray-300': currentIndex !== index }"
+              ></button>
+            </template>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="py-16 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="lg:text-center">
+          <h2
+            class="text-base text-uttop-purple font-semibold tracking-wide uppercase"
+          >
+            Contact Us
+          </h2>
+          <p
+            class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-uttop-navy sm:text-4xl"
+          >
+            Get in Touch
+          </p>
+          <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+            Interested in our research? Have questions? Reach out to us!
+          </p>
+        </div>
+        <div class="mt-10 max-w-lg mx-auto">
+          <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="px-4 py-5 sm:p-6">
+              <form action="#" method="POST" class="space-y-6">
+                <div>
+                  <label
+                    for="name"
+                    class="block text-sm font-medium text-gray-700"
+                    >Name</label
+                  >
+                  <div class="mt-1">
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      placeholder="Enter your name"
+                      class="shadow-sm focus:ring-uttop-mint focus:border-uttop-mint block w-full sm:text-sm border-gray-300 rounded-md px-4 py-3"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    for="email"
+                    class="block text-sm font-medium text-gray-700"
+                    >Email</label
+                  >
+                  <div class="mt-1">
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      placeholder="Enter your email"
+                      class="shadow-sm focus:ring-uttop-mint focus:border-uttop-mint block w-full sm:text-sm border-gray-300 rounded-md px-4 py-3"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    for="subject"
+                    class="block text-sm font-medium text-gray-700"
+                    >Subject</label
+                  >
+                  <div class="mt-1">
+                    <input
+                      type="text"
+                      name="subject"
+                      id="subject"
+                      placeholder="Enter the subject"
+                      class="shadow-sm focus:ring-uttop-mint focus:border-uttop-mint block w-full sm:text-sm border-gray-300 rounded-md px-4 py-3"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    for="message"
+                    class="block text-sm font-medium text-gray-700"
+                    >Message</label
+                  >
+                  <div class="mt-1">
+                    <textarea
+                      rows="4"
+                      name="message"
+                      id="message"
+                      placeholder="Write your message here..."
+                      class="shadow-sm focus:ring-uttop-mint focus:border-uttop-mint block w-full sm:text-sm border-gray-300 rounded-md px-4 py-3"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div>
+                  <button
+                    type="submit"
+                    class="w-full flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-uttop-purple hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-uttop-purple"
+                  >
+                    Send Message
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      function teamCarousel() {
+        return {
+          currentIndex: 0,
+          autoplay: false,
+          autoplaySpeed: 3000,
+          autoplayInterval: null,
+          transitioning: false,
+          cardsPerSlide: 1,
+          teamMembers: [
+            {
+              name: "Sophie Gilbert",
+              role: "Product Designer",
+              bgColor: "purple",
+              socialLinks: ["github", "linkedin"],
+              hasPersonalSite: true,
+            },
+            {
+              name: "Paul Miles",
+              role: "Lead Developer",
+              bgColor: "blue",
+              socialLinks: ["github", "linkedin", "researchgate"],
+              hasPersonalSite: true,
+            },
+            {
+              name: "Jasmine Ford",
+              role: "UX Researcher",
+              bgColor: "pink",
+              socialLinks: ["linkedin", "researchgate"],
+              hasPersonalSite: true,
+            },
+            {
+              name: "Chris Wallace",
+              role: "Data Scientist",
+              bgColor: "green",
+              socialLinks: ["github", "linkedin", "researchgate"],
+              hasPersonalSite: false,
+            },
+            {
+              name: "Maria Rodriguez",
+              role: "Project Manager",
+              bgColor: "yellow",
+              socialLinks: ["github", "linkedin"],
+              hasPersonalSite: false,
+            },
+            {
+              name: "David Kim",
+              role: "Frontend Developer",
+              bgColor: "indigo",
+              socialLinks: ["github", "linkedin"],
+              hasPersonalSite: true,
+            },
+            {
+              name: "Emma Patel",
+              role: "Content Strategist",
+              bgColor: "red",
+              socialLinks: ["linkedin", "researchgate"],
+              hasPersonalSite: true,
+            },
+          ],
+          slides: [],
+
+          init() {
+            this.checkScreenSize();
+            this.calculateSlides();
+
+            window.addEventListener("resize", () => {
+              const oldCardsPerSlide = this.cardsPerSlide;
+              this.checkScreenSize();
+
+              if (oldCardsPerSlide !== this.cardsPerSlide) {
+                this.calculateSlides();
+                
+                this.currentIndex = 0;
+              }
+            });
+
+            
+            setTimeout(() => {
+              document.querySelectorAll(".team-card").forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+              });
+            }, 100);
+          },
+
+          checkScreenSize() {
+            
+            if (window.innerWidth >= 1024) {
+              this.cardsPerSlide = 3;
+            } else if (window.innerWidth >= 640) {
+              this.cardsPerSlide = 2;
+            } else {
+              this.cardsPerSlide = 1;
+            }
+          },
+
+          calculateSlides() {
+            
+            this.slides = [];
+
+            
+            const slideCount = Math.ceil(
+              this.teamMembers.length / this.cardsPerSlide
+            );
+
+            
+            for (let i = 0; i < slideCount; i++) {
+              this.slides.push(i);
+            }
+          },
+
+          getSlideMembers(slideIndex) {
+            const startIndex = slideIndex * this.cardsPerSlide;
+            const endIndex = Math.min(
+              startIndex + this.cardsPerSlide,
+              this.teamMembers.length
+            );
+            return this.teamMembers.slice(startIndex, endIndex);
+          },
+
+          nextSlide() {
+            if (this.transitioning) return;
+            this.transitioning = true;
+
+            if (this.currentIndex < this.slides.length - 1) {
+              this.currentIndex++;
+            } else {
+              this.currentIndex = 0;
+            }
+
+            setTimeout(() => {
+              this.transitioning = false;
+            }, 800);
+          },
+
+          prevSlide() {
+            if (this.transitioning) return;
+            this.transitioning = true;
+
+            if (this.currentIndex > 0) {
+              this.currentIndex--;
+            } else {
+              this.currentIndex = this.slides.length - 1;
+            }
+
+            setTimeout(() => {
+              this.transitioning = false;
+            }, 800);
+          },
+
+          goToSlide(index) {
+            if (this.transitioning) return;
+            this.transitioning = true;
+
+            this.currentIndex = index;
+
+            setTimeout(() => {
+              this.transitioning = false;
+            }, 800);
+          },
+
+          toggleAutoplay() {
+            this.autoplay = !this.autoplay;
+
+            if (this.autoplay) {
+              this.autoplayInterval = setInterval(() => {
+                this.nextSlide();
+              }, this.autoplaySpeed);
+            } else {
+              clearInterval(this.autoplayInterval);
+            }
+          },
+        };
+      }
+    </script>
+
+    
+    <footer class="bg-uttop-navy text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-xl font-bold mb-4">Weft Project</h3>
+            <p class="text-gray-300">
+              Weaving together technology and innovation for a better tomorrow.
+            </p>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Quick Links</h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="text-gray-300 hover:text-uttop-mint">Home</a>
+              </li>
+              <li>
+                <a href="#" class="text-gray-300 hover:text-uttop-mint"
+                  >About</a
+                >
+              </li>
+              <li>
+                <a href="#projects" class="text-gray-300 hover:text-uttop-mint"
+                  >Projects</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#publications"
+                  class="text-gray-300 hover:text-uttop-mint"
+                  >Publications</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Resources</h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="text-gray-300 hover:text-uttop-mint"
+                  >Documentation</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-300 hover:text-uttop-mint"
+                  >Research</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-300 hover:text-uttop-mint"
+                  >Partners</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Contact</h4>
+            <ul class="space-y-2">
+              <li class="text-gray-300">info@weftproject.org</li>
+              <li class="text-gray-300">+1 (555) 123-4567</li>
+            </ul>
+            <div class="flex space-x-4 mt-4">
+              <a href="#" class="text-gray-300 hover:text-uttop-mint">
+                <span class="sr-only">Twitter</span>
+                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"
+                  ></path>
+                </svg>
+              </a>
+              <a href="#" class="text-gray-300 hover:text-uttop-mint">
+                <span class="sr-only">LinkedIn</span>
+                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+                  ></path>
+                </svg>
+              </a>
+              <a href="#" class="text-gray-300 hover:text-uttop-mint">
+                <span class="sr-only">GitHub</span>
+                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    fill-rule="evenodd"
+                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div
+          class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm"
+        >
+          <p>&copy; 2025 Weft Project. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+        
+        const researchDropdownButton = document.getElementById('research-dropdown-button');
+        const researchDropdown = document.getElementById('research-dropdown');
+        
+        researchDropdownButton.addEventListener('click', () => {
+          researchDropdown.classList.toggle('hidden');
+        });
+      </script>
+  </body>
+</html>

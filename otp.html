@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+    <div class="w-full max-w-md">
+        <div class="mx-auto max-w-xs mb-4">
+           <img src="./assets/img/logo-uttop-horizontal-rvb.png" alt="Logo UT Tarbes" class="w-full h-auto">
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md overflow-hidden w-full">
+            <div class="flex h-1">
+                <div class="w-1/3 bg-green-400"></div>
+                <div class="w-1/3 bg-yellow-300"></div>
+                <div class="w-1/3 bg-pink-300"></div>
+            </div>
+            
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-center mb-4 text-blue-900">Verification Code</h2>
+                
+                <div class="mb-6 text-center">
+                    <p class="text-gray-600 text-sm">Enter the verification code sent to your email address</p>
+                </div>
+                
+                <form>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-3 text-blue-900 text-center">Enter 6-Digit Code</label>
+                        <div class="flex justify-between gap-2">
+                            <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900" required>
+                            <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900" required>
+                            <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900" required>
+                            <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900" required>
+                            <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900" required>
+                            <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="bg-blue-900 hover:bg-indigo-600 text-white py-3 px-4 w-full rounded-lg font-medium transition duration-300">
+                        Verify Code
+                    </button>
+                </form>
+                
+                <div class="text-center mt-6">
+                    <p class="text-sm text-gray-600">Didn't receive a code? <a href="#" class="text-indigo-600 hover:text-indigo-800">Resend Code</a></p>
+                    <p class="text-xs text-gray-500 mt-2">You can request a new code in <span id="timer" class="font-medium">01:59</span></p>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <p class="text-xs text-gray-500">Need assistance? <a href="#" class="text-indigo-600 hover:text-indigo-800">Contact Support</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-tab between input fields
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input[type="text"][maxlength="1"]');
+            
+            inputs.forEach((input, index) => {
+                // Move to next input field after entering a digit
+                input.addEventListener('input', function() {
+                    if (this.value.length === 1) {
+                        const nextInput = inputs[index + 1];
+                        if (nextInput) nextInput.focus();
+                    }
+                });
+                
+                // Handle backspace to go to previous field
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !this.value) {
+                        const prevInput = inputs[index - 1];
+                        if (prevInput) prevInput.focus();
+                    }
+                });
+            });
+        });
+
+        // Countdown timer
+        document.addEventListener('DOMContentLoaded', function() {
+            const timerElement = document.getElementById('timer');
+            let timeLeft = 119; // 1:59 in seconds
+            
+            const countdown = setInterval(function() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    timerElement.textContent = '00:00';
+                    // Enable resend link here
+                }
+                
+                timeLeft--;
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Details | WEFT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js"
+    defer
+  ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    .fade-in {
+      animation: fadeIn 0.8s ease-in forwards;
+      opacity: 0;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .progress-bar {
+      height: 3px;
+      background: linear-gradient(90deg, #1e3a8a, #7e22ce, #10b981, #f59e0b);
+      background-size: 300% 100%;
+      animation: progress-animation 2s linear infinite;
+    }
+    
+    @keyframes progress-animation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .tab-active {
+      color: #004159;
+      border-bottom: 2px solid #004159;
+    }
+    
+    .contributor-avatar:hover {
+      transform: scale(1.05);
+      z-index: 10;
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "uttop-navy": "#004159",
+            "uttop-mint": "#5EDAD1",
+            "uttop-yellow": "#F5D547",
+            "uttop-pink": "#FF9BC2",
+            "uttop-purple": "#6665DD",
+          },
+          animation: {
+            "fade-in": "fadeIn 0.5s ease-in-out",
+            "slide-up": "slideUp 0.6s ease-in-out",
+          },
+          keyframes: {
+            fadeIn: {
+              "0%": { opacity: "0" },
+              "100%": { opacity: "1" },
+            },
+            slideUp: {
+              "0%": { transform: "translateY(20px)", opacity: "0" },
+              "100%": { transform: "translateY(0)", opacity: "1" },
+            },
+          },
+        },
+      },
+    };
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tabs functionality
+      const tabs = document.querySelectorAll('.tab-button');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Remove active class from all tabs
+          tabs.forEach(t => t.classList.remove('tab-active'));
+          
+          // Add active class to current tab
+          tab.classList.add('tab-active');
+          
+          // Hide all tab contents
+          tabContents.forEach(content => {
+            content.classList.add('hidden');
+          });
+          
+          // Show the selected tab content
+          const target = tab.getAttribute('data-tab');
+          document.getElementById(target).classList.remove('hidden');
+        });
+      });
+      
+      // Progress bar functionality
+      const progressBar = document.querySelector('.project-progress');
+      const progressPercentage = parseInt(progressBar.getAttribute('data-progress'));
+      progressBar.style.width = `${progressPercentage}%`;
+      
+      // Timeline animation
+      const timelineItems = document.querySelectorAll('.timeline-item');
+      timelineItems.forEach((item, index) => {
+        setTimeout(() => {
+          item.classList.add('opacity-100');
+          item.style.transform = 'translateY(0)';
+        }, 300 * index);
+      });
+    });
+  </script>
+</head>
+<body class="bg-gray-50">
+  
+  <!-- Navigation Bar (same as your original code) -->
+  <nav class="bg-uttop-navy shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <!-- Left side nav items -->
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <span class="text-white text-2xl font-bold">WEFT</span>
+          </div>
+          <!-- Desktop navigation -->
+          <div class="hidden md:flex md:items-center md:ml-8 md:space-x-4">
+            <a href="#home" class="text-white hover:text-uttop-mint px-3 py-2 text-sm font-medium">Home</a>
+            <a href="#about" class="text-gray-200 hover:text-uttop-mint px-3 py-2 text-sm font-medium">About</a>
+            <div class="relative group">
+              <a href="#research" class="text-white hover:text-uttop-mint px-3 py-2 text-sm font-medium inline-flex items-center">
+                Research
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </a>
+              <div class="absolute left-0 w-48 mt-2 origin-top-right bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-300">
+                <div class="py-1">
+                  <a href="#projects" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Projects</a>
+                  <a href="#publications" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Publications</a>
+                </div>
+              </div>
+            </div>
+            <a href="#team" class="text-gray-200 hover:text-uttop-mint px-3 py-2 text-sm font-medium">Team</a>
+            <a href="#contact" class="text-gray-200 hover:text-uttop-mint px-3 py-2 text-sm font-medium">Contact</a>
+          </div>
+        </div>
+        
+        <!-- Right side authentication buttons -->
+        <div class="hidden md:flex md:items-center">
+          <a href="Login.html" class="text-gray-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Sign In</a>
+          <a href="Signup.html" class="ml-3 bg-uttop-mint hover:bg-opacity-90 text-uttop-navy px-4 py-2 rounded-md text-sm font-medium">Sign Up</a>
+        </div>
+        
+        <!-- Mobile menu button -->
+        <div class="flex items-center md:hidden">
+          <a id="mobile-menu-button" class="text-gray-200 hover:text-white focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mobile menu (hidden by default) -->
+    <div id="mobile-menu" class="hidden md:hidden">
+      <!-- Mobile menu content here (same as your original code) -->
+    </div>
+  </nav>
+
+  <!-- Project Header Section -->
+  <div class="bg-uttop-navy">
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:py-16 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+          <!-- Back button -->
+          <a href="projects.html" class="inline-flex items-center text-gray-300 hover:text-uttop-mint mb-4">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Back to Projects
+          </a>
+          
+          <!-- Project Title -->
+          <h1 class="text-3xl font-extrabold text-white sm:text-4xl">
+            Project Synthesis
+            <span class="ml-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+              Active
+            </span>
+          </h1>
+          
+          <!-- Project Brief Description -->
+          <p class="mt-4 text-xl text-gray-300 max-w-3xl">
+            Developing novel data integration techniques using advanced weft technology.
+          </p>
+        </div>
+        
+        <!-- Project Metadata -->
+        <div class="mt-6 md:mt-0">
+          <div class="flex flex-col bg-white bg-opacity-10 rounded-lg p-4 backdrop-blur-sm">
+            <div class="flex items-center mb-2">
+              <svg class="w-5 h-5 text-gray-300 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <span class="text-gray-300">Start Date: <span class="text-white font-medium">August 1, 2024</span></span>
+            </div>
+            <div class="flex items-center mb-2">
+              <svg class="w-5 h-5 text-gray-300 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span class="text-gray-300">Duration: <span class="text-white font-medium">6 months</span></span>
+            </div>
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-gray-300 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+              <span class="text-gray-300">Team Size: <span class="text-white font-medium">3 members</span></span>
+            </div>
+          </div>
+          
+          <!-- Call to Action -->
+          <div class="mt-4 flex justify-end">
+            <a href="#contact" class="bg-uttop-mint hover:bg-opacity-90 text-uttop-navy px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+              Join This Project
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Navigation Tabs -->
+  <div class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex overflow-x-auto py-3 -mb-px space-x-8">
+        <button class="tab-button tab-active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="overview">
+          Overview
+        </button>
+        <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="details">
+          Technical Details
+        </button>
+        <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="team">
+          Team
+        </button>
+        <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="timeline">
+          Timeline
+        </button>
+        <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="resources">
+          Resources
+        </button>
+        <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="updates">
+          Updates
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Overview Tab (visible by default) -->
+      <div id="overview" class="tab-content fade-in" data-tab="overview">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Main Content -->
+          <div class="lg:col-span-2">
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+              <div class="p-6">
+                <h2 class="text-2xl font-bold text-uttop-navy mb-4">About This Project</h2>
+                <p class="text-gray-600 mb-4">
+                  Project Synthesis represents a groundbreaking approach to data integration, leveraging advanced weft technology to create seamless connections between disparate data sources.
+                </p>
+                <p class="text-gray-600 mb-4">
+                  Our team is developing innovative algorithms that can analyze, categorize, and connect information from multiple sources without requiring extensive manual configuration or management.
+                </p>
+                <p class="text-gray-600 mb-6">
+                  This technology has applications across industries including healthcare, finance, research, and government, where the ability to quickly synthesize information from multiple sources can lead to better decision-making and more efficient operations.
+                </p>
+                
+                <!-- Key Features -->
+                <h3 class="text-xl font-semibold text-uttop-navy mb-3">Key Features</h3>
+                <ul class="space-y-2 mb-6">
+                  <li class="flex items-start">
+                    <svg class="w-5 h-5 text-uttop-mint mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-600">Automated data classification and categorization</span>
+                  </li>
+                  <li class="flex items-start">
+                    <svg class="w-5 h-5 text-uttop-mint mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-600">Real-time data integration with minimal latency</span>
+                  </li>
+                  <li class="flex items-start">
+                    <svg class="w-5 h-5 text-uttop-mint mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-600">Advanced pattern recognition across heterogeneous data sources</span>
+                  </li>
+                  <li class="flex items-start">
+                    <svg class="w-5 h-5 text-uttop-mint mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-600">Scalable architecture supporting billions of data points</span>
+                  </li>
+                </ul>
+                
+                <!-- Project Goals -->
+                <h3 class="text-xl font-semibold text-uttop-navy mb-3">Project Goals</h3>
+                <ul class="space-y-2 mb-6">
+                  <li class="flex items-start">
+                    <svg class="w-5 h-5 text-uttop-yellow mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <span class="text-gray-600">Develop and validate core integration algorithms by Q4 2024</span>
+                  </li>
+                  <li class="flex items-start">
+                    <svg class="w-5 h-5 text-uttop-yellow mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <span class="text-gray-600">Complete beta testing with partner organizations by January 2025</span>
+                  </li>
+                  <li class="flex items-start">
+                    <svg class="w-5 h-5 text-uttop-yellow mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <span class="text-gray-600">Release initial public documentation and API specifications</span>
+                  </li>
+                </ul>
+                
+                <!-- Project Image -->
+                <div class="mt-6 rounded-lg overflow-hidden">
+                  <img src="/api/placeholder/800/400" alt="Project Synthesis Diagram" class="w-full h-auto object-cover">
+                </div>
+              </div>
+            </div>
+            
+            <!-- Latest Updates Section -->
+            <div class="mt-8 bg-white rounded-lg shadow-sm overflow-hidden">
+              <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <h2 class="text-2xl font-bold text-uttop-navy">Latest Updates</h2>
+                  <a href="#updates" class="text-uttop-mint hover:text-uttop-navy text-sm font-medium">View all updates</a>
+                </div>
+                
+                <!-- Update Items -->
+                <div class="space-y-6">
+                  <!-- Update 1 -->
+                  <div class="border-l-4 border-uttop-mint pl-4">
+                    <div class="flex items-center text-sm text-gray-500 mb-1">
+                      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                      April 10, 2025
+                    </div>
+                    <h3 class="font-medium text-uttop-navy">Algorithm Optimization Complete</h3>
+                    <p class="text-gray-600 mt-1">We've successfully optimized our core integration algorithm, achieving a 30% performance improvement over previous iterations.</p>
+                  </div>
+                  
+                  <!-- Update 2 -->
+                  <div class="border-l-4 border-uttop-mint pl-4">
+                    <div class="flex items-center text-sm text-gray-500 mb-1">
+                      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                      March 15, 2025
+                    </div>
+                    <h3 class="font-medium text-uttop-navy">New Testing Partner Onboarded</h3>
+                    <p class="text-gray-600 mt-1">We're excited to welcome Berkeley Medical Center as our newest testing partner, bringing valuable healthcare data integration scenarios.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Sidebar Content -->
+          <div class="lg:col-span-1">
+            <!-- Project Status Card -->
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+              <div class="p-6">
+                <h3 class="text-lg font-semibold text-uttop-navy mb-4">Project Status</h3>
+                
+                <!-- Progress Bar -->
+                <div class="mb-4">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="text-sm font-medium text-gray-700">Overall Progress</span>
+                    <span class="text-sm font-medium text-gray-700">65%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="project-progress bg-gradient-to-r from-uttop-mint to-uttop-navy h-2.5 rounded-full" data-progress="65"></div>
+                  </div>
+                </div>
+                
+                <!-- Status Indicators -->
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">Research Phase</span>
+                    <span class="font-medium text-green-600">Completed</span>
+                  </div>
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">Development Phase</span>
+                    <span class="font-medium text-blue-600">In Progress</span>
+                  </div>
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">Testing Phase</span>
+                    <span class="font-medium text-yellow-600">Starting Soon</span>
+                  </div>
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">Documentation</span>
+                    <span class="font-medium text-gray-400">Not Started</span>
+                  </div>
+                </div>
+                
+                <!-- Next Milestone -->
+                <div class="mt-5 pt-5 border-t border-gray-200">
+                  <h4 class="text-sm font-medium text-gray-500 mb-2">NEXT MILESTONE</h4>
+                  <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-blue-100 rounded-full p-1">
+                      <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                    </div>
+                    <div class="ml-3">
+                      <h5 class="text-sm font-medium text-gray-900">Beta Testing Launch</h5>
+                      <p class="text-sm text-gray-500">June 15, 2025</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Team Members Card -->
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+              <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-semibold text-uttop-navy">Team Members</h3>
+                  <a href="#team" class="text-sm text-uttop-mint hover:text-uttop-navy">See all</a>
+                </div>
+                
+                <div class="space-y-4">
+                  <!-- Team Member 1 -->
+                  <div class="flex items-center">
+                    <img class="w-10 h-10 rounded-full mr-3 object-cover" src="/api/placeholder/40/40" alt="Dr. Sarah Chen">
+                    <div>
+                      <h4 class="text-sm font-medium text-gray-900">Dr. Sarah Chen</h4>
+                      <p class="text-xs text-gray-500">Project Lead</p>
+                    </div>
+                  </div>
+                  
+                  <!-- Team Member 2 -->
+                  <div class="flex items-center">
+                    <img class="w-10 h-10 rounded-full mr-3 object-cover" src="/api/placeholder/40/40" alt="Marcus Williams">
+                    <div>
+                      <h4 class="text-sm font-medium text-gray-900">Marcus Williams</h4>
+                      <p class="text-xs text-gray-500">Algorithm Developer</p>
+                    </div>
+                  </div>
+                  
+                  <!-- Team Member 3 -->
+                  <div class="flex items-center">
+                    <img class="w-10 h-10 rounded-full mr-3 object-cover" src="/api/placeholder/40/40" alt="Priya Patel">
+                    <div>
+                      <h4 class="text-sm font-medium text-gray-900">Priya Patel</h4>
+                      <p class="text-xs text-gray-500">Data Scientist</p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Technical Details Tab -->
+        <div id="details" class="tab-content hidden" data-tab="details">
+          <div class="bg-white rounded-lg shadow-sm overflow-hidden p-6">
+            <h2 class="text-2xl font-bold text-uttop-navy mb-4">Technical Details</h2>
+            <p class="text-gray-600 mb-4">
+              This section provides an in-depth look at the technical aspects of Project Synthesis.
+            </p>
+            <h3 class="text-xl font-semibold text-uttop-navy mb-3">Architecture Overview</h3>
+            <p class="text-gray-600 mb-6">
+              The system architecture is designed to handle large-scale data integration with minimal latency. It consists of three main components:
+            </p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-start">
+                <svg class="w-5 h-5 text-uttop-mint mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="text-gray-600">Data Ingestion Layer</span>
+              </li>
+              <li class="flex items-start">
+                <svg class="w-5 h-5 text-uttop-mint mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="text-gray-600">Processing Engine</span>
+              </li>
+              <li class="flex items-start">
+                <svg class="w-5 h-5 text-uttop-mint mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="text-gray-600">Output Interface</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+  
+        <!-- Team Tab -->
+        <div id="team" class="tab-content hidden">
+          <div class="bg-white rounded-lg shadow-sm overflow-hidden p-6">
+            <h2 class="text-2xl font-bold text-uttop-navy mb-4">Project Team</h2>
+            <p class="text-gray-600 mb-4">
+              Meet the talented individuals behind Project Synthesis.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Team Member 1 -->
+              <div class="flex items-center bg-gray-50 p-4 rounded-lg">
+                <img class="w-12 h-12 rounded-full mr-3 object-cover" src="/api/placeholder/40/40" alt="Dr. Sarah Chen">
+                <div>
+                  <h4 class="text-base font-medium text-gray-900">Dr. Sarah Chen</h4>
+                  <p class="text-sm text-gray-500">Project Lead</p>
+                </div>
+              </div>
+              <!-- Team Member 2 -->
+              <div class="flex items-center bg-gray-50 p-4 rounded-lg">
+                <img class="w-12 h-12 rounded-full mr-3 object-cover" src="/api/placeholder/40/40" alt="Marcus Williams">
+                <div>
+                  <h4 class="text-base font-medium text-gray-900">Marcus Williams</h4>
+                  <p class="text-sm text-gray-500">Algorithm Developer</p>
+                </div>
+              </div>
+              <!-- Team Member 3 -->
+              <div class="flex items-center bg-gray-50 p-4 rounded-lg">
+                <img class="w-12 h-12 rounded-full mr-3 object-cover" src="/api/placeholder/40/40" alt="Priya Patel">
+                <div>
+                  <h4 class="text-base font-medium text-gray-900">Priya Patel</h4>
+                  <p class="text-sm text-gray-500">Data Scientist</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Timeline Tab -->
+        <div id="timeline" class="tab-content hidden">
+          <div class="bg-white rounded-lg shadow-sm overflow-hidden p-6">
+            <h2 class="text-2xl font-bold text-uttop-navy mb-4">Project Timeline</h2>
+            <p class="text-gray-600 mb-6">
+              A detailed timeline of key milestones and deliverables for Project Synthesis.
+            </p>
+            <div class="space-y-6">
+              <!-- Milestone 1 -->
+              <div class="timeline-item opacity-0 transform translate-y-4">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm font-medium text-gray-700">Research Phase</span>
+                  <span class="text-sm font-medium text-green-600">Completed</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                  <div class="w-1/2 bg-green-600 h-1.5 rounded-full"></div>
+                </div>
+              </div>
+              <!-- Milestone 2 -->
+              <div class="timeline-item opacity-0 transform translate-y-4">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm font-medium text-gray-700">Development Phase</span>
+                  <span class="text-sm font-medium text-blue-600">In Progress</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                  <div class="w-1/4 bg-blue-600 h-1.5 rounded-full"></div>
+                </div>
+              </div>
+              <!-- Milestone 3 -->
+              <div class="timeline-item opacity-0 transform translate-y-4">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm font-medium text-gray-700">Testing Phase</span>
+                  <span class="text-sm font-medium text-yellow-600">Starting Soon</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                  <div class="w-0 bg-yellow-600 h-1.5 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Resources Tab -->
+        <div id="resources" class="tab-content hidden">
+          <div class="bg-white rounded-lg shadow-sm overflow-hidden p-6">
+            <h2 class="text-2xl font-bold text-uttop-navy mb-4">Resources</h2>
+            <p class="text-gray-600 mb-4">
+              Access useful resources and documentation related to Project Synthesis.
+            </p>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="text-uttop-mint hover:text-uttop-navy">Project Documentation</a>
+              </li>
+              <li>
+                <a href="#" class="text-uttop-mint hover:text-uttop-navy">API Specifications</a>
+              </li>
+              <li>
+                <a href="#" class="text-uttop-mint hover:text-uttop-navy">Research Papers</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+  
+        <!-- Updates Tab -->
+        <div id="updates" class="tab-content hidden">
+          <div class="bg-white rounded-lg shadow-sm overflow-hidden p-6">
+            <h2 class="text-2xl font-bold text-uttop-navy mb-4">Project Updates</h2>
+            <p class="text-gray-600 mb-6">
+              Stay up-to-date with the latest developments in Project Synthesis.
+            </p>
+            <div class="space-y-6">
+              <!-- Update 1 -->
+              <div class="border-l-4 border-uttop-mint pl-4">
+                <div class="flex items-center text-sm text-gray-500 mb-1">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  April 10, 2025
+                </div>
+                <h3 class="font-medium text-uttop-navy">Algorithm Optimization Complete</h3>
+                <p class="text-gray-600 mt-1">We've successfully optimized our core integration algorithm.</p>
+              </div>
+              <!-- Update 2 -->
+              <div class="border-l-4 border-uttop-mint pl-4">
+                <div class="flex items-center text-sm text-gray-500 mb-1">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  March 15, 2025
+                </div>
+                <h3 class="font-medium text-uttop-navy">New Testing Partner Onboarded</h3>
+                <p class="text-gray-600 mt-1">Berkeley Medical Center joins as a testing partner.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  
+    <!-- Footer Section -->
+    <footer class="bg-uttop-navy text-white py-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="mb-4 md:mb-0">
+            <span class="text-lg font-bold">WEFT</span>
+            <p class="text-sm text-gray-300">© 2025 WEFT. All rights reserved.</p>
+          </div>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-300 hover:text-white">Privacy Policy</a>
+            <a href="#" class="text-gray-300 hover:text-white">Terms of Service</a>
+            <a href="#" class="text-gray-300 hover:text-white">Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+  </html>

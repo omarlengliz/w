@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weft Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "uttop-navy": "#004159",
+            "uttop-mint": "#5EDAD1",
+            "uttop-yellow": "#F5D547",
+            "uttop-pink": "#FF9BC2",
+            "uttop-purple": "#6665DD",
+          },
+          animation: {
+            "fade-in": "fadeIn 0.5s ease-in-out",
+            "slide-up": "slideUp 0.6s ease-in-out",
+            "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            "bounce-slow": "bounce 3s infinite",
+            "scroll-x": "scrollX 25s linear infinite",
+          },
+          keyframes: {
+            fadeIn: {
+              "0%": { opacity: "0" },
+              "100%": { opacity: "1" },
+            },
+            slideUp: {
+              "0%": { transform: "translateY(20px)", opacity: "0" },
+              "100%": { transform: "translateY(0)", opacity: "1" },
+            },
+            scrollX: {
+              "0%": { transform: "translateX(0)" },
+              "100%": { transform: "translateX(-50%)" },
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js" defer></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  <style>
+    [x-cloak] { display: none !important; }
+    
+    .tooltip {
+      position: relative;
+    }
+    
+    .tooltip-text {
+      visibility: hidden;
+      position: absolute;
+      z-index: 100;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 65, 89, 0.9);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      opacity: 0;
+    }
+    
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-700 font-sans">
+  <div x-data="{ 
+    sidebarOpen: true,
+    managementExpanded: true,
+    activeSection: 'researchers',
+    activeTab: 'management'
+  }" class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <div 
+      :class="sidebarOpen ? 'w-64' : 'w-16'" 
+      class="transition-all duration-300 bg-uttop-navy text-white h-screen flex flex-col justify-between shadow-lg z-10"
+    >
+      <!-- Sidebar Header -->
+      <div>
+        <div class="p-4 text-xl font-bold flex items-center space-x-2" :class="sidebarOpen ? 'justify-start' : 'justify-center'">
+          <i class="fas fa-bars cursor-pointer transition-transform hover:rotate-90" @click="sidebarOpen = !sidebarOpen"></i>
+          <span x-show="sidebarOpen" class="animate-fade-in">Weft Dashboard</span>
+        </div>
+        <nav class="mt-6">
+          <ul>
+            <!-- Dashboard Link -->
+            <li class="mb-2">
+              <a href="#" 
+                @click="activeTab = 'dashboard'" 
+                :class="activeTab === 'dashboard' ? 'bg-uttop-mint text-uttop-navy font-medium' : 'hover:bg-uttop-navy-light'" 
+                class="flex items-center p-3 rounded-md transition-colors mx-2"
+                :class="sidebarOpen ? 'justify-start' : 'justify-center tooltip'"
+              >
+                <i class="fas fa-tachometer-alt text-lg" :class="sidebarOpen ? 'mr-3' : ''"></i>
+                <span x-show="sidebarOpen">Dashboard</span>
+                <span x-cloak x-show="!sidebarOpen" class="tooltip-text">Dashboard</span>
+              </a>
+            </li>
+
+            <!-- Management Section -->
+            <li class="mb-2">
+              <div 
+                @click="activeTab = 'management'; managementExpanded = !managementExpanded" 
+                :class="activeTab === 'management' ? 'bg-uttop-mint text-uttop-navy font-medium' : 'hover:bg-opacity-20 hover:bg-white'" 
+                class="flex items-center p-3 rounded-md transition-colors cursor-pointer mx-2"
+                :class="sidebarOpen ? 'justify-start' : 'justify-center tooltip'"
+              >
+                <i class="fas fa-users-cog text-lg" :class="sidebarOpen ? 'mr-3' : ''"></i>
+                <span x-show="sidebarOpen">User Management</span>
+                <span x-cloak x-show="!sidebarOpen" class="tooltip-text">User Management</span>
+                <i x-show="sidebarOpen" :class="managementExpanded ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas ml-auto text-sm transition-transform"></i>
+              </div>
+              <div x-show="managementExpanded && sidebarOpen" class="ml-7 mt-2 space-y-1 animate-fade-in">
+                <a href="#" 
+                  @click="activeSection = 'researchers'" 
+                  :class="activeSection === 'researchers' ? 'bg-uttop-navy-light text-uttop-mint' : 'hover:bg-opacity-10 hover:bg-white'" 
+                  class="block px-4 py-2 rounded-md text-sm transition-colors"
+                >
+                  View Researchers
+                </a>
+                <a href="#" 
+                  @click="activeSection = 'create-user'" 
+                  :class="activeSection === 'create-user' ? 'bg-uttop-navy-light text-uttop-mint' : 'hover:bg-opacity-10 hover:bg-white'" 
+                  class="block px-4 py-2 rounded-md text-sm transition-colors"
+                >
+                  Create User
+                </a>
+                <a href="#" 
+                  @click="activeSection = 'assign-roles'" 
+                  :class="activeSection === 'assign-roles' ? 'bg-uttop-navy-light text-uttop-mint' : 'hover:bg-opacity-10 hover:bg-white'" 
+                  class="block px-4 py-2 rounded-md text-sm transition-colors"
+                >
+                  Assign Roles
+                </a>
+                <a href="#" 
+                  @click="activeSection = 'reset-password'" 
+                  :class="activeSection === 'reset-password' ? 'bg-uttop-navy-light text-uttop-mint' : 'hover:bg-opacity-10 hover:bg-white'" 
+                  class="block px-4 py-2 rounded-md text-sm transition-colors"
+                >
+                  Reset Passwords
+                </a>
+              </div>
+            </li>
+
+            <!-- Settings -->
+            <li class="mb-2">
+              <a href="#" 
+                @click="activeTab = 'settings'" 
+                :class="activeTab === 'settings' ? 'bg-uttop-mint text-uttop-navy font-medium' : 'hover:bg-opacity-20 hover:bg-white'" 
+                class="flex items-center p-3 rounded-md transition-colors mx-2"
+                :class="sidebarOpen ? 'justify-start' : 'justify-center tooltip'"
+              >
+                <i class="fas fa-cog text-lg" :class="sidebarOpen ? 'mr-3' : ''"></i>
+                <span x-show="sidebarOpen">Settings</span>
+                <span x-cloak x-show="!sidebarOpen" class="tooltip-text">Settings</span>
+              </a>
+            </li>
+
+            <!-- Future Section 1 -->
+            <li class="mb-2">
+              <a href="#" 
+                @click="activeTab = 'reports'" 
+                :class="activeTab === 'reports' ? 'bg-uttop-mint text-uttop-navy font-medium' : 'hover:bg-opacity-20 hover:bg-white'" 
+                class="flex items-center p-3 rounded-md transition-colors mx-2"
+                :class="sidebarOpen ? 'justify-start' : 'justify-center tooltip'"
+              >
+                <i class="fas fa-chart-bar text-lg" :class="sidebarOpen ? 'mr-3' : ''"></i>
+                <span x-show="sidebarOpen">Reports</span>
+                <span x-cloak x-show="!sidebarOpen" class="tooltip-text">Reports</span>
+              </a>
+            </li>
+
+            <!-- Future Section 2 -->
+            <li class="mb-2">
+              <a href="#" 
+                @click="activeTab = 'analytics'" 
+                :class="activeTab === 'analytics' ? 'bg-uttop-mint text-uttop-navy font-medium' : 'hover:bg-opacity-20 hover:bg-white'" 
+                class="flex items-center p-3 rounded-md transition-colors mx-2"
+                :class="sidebarOpen ? 'justify-start' : 'justify-center tooltip'"
+              >
+                <i class="fas fa-chart-line text-lg" :class="sidebarOpen ? 'mr-3' : ''"></i>
+                <span x-show="sidebarOpen">Analytics</span>
+                <span x-cloak x-show="!sidebarOpen" class="tooltip-text">Analytics</span>
+              </a>
+            </li>
+
+            <!-- Future Section 3 -->
+            <li class="mb-2">
+              <a href="#" 
+                @click="activeTab = 'logs'" 
+                :class="activeTab === 'logs' ? 'bg-uttop-mint text-uttop-navy font-medium' : 'hover:bg-opacity-20 hover:bg-white'" 
+                class="flex items-center p-3 rounded-md transition-colors mx-2"
+                :class="sidebarOpen ? 'justify-start' : 'justify-center tooltip'"
+              >
+                <i class="fas fa-clipboard-list text-lg" :class="sidebarOpen ? 'mr-3' : ''"></i>
+                <span x-show="sidebarOpen">System Logs</span>
+                <span x-cloak x-show="!sidebarOpen" class="tooltip-text">System Logs</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      
+      <!-- User Profile Section -->
+      <div class="p-4">
+        <div x-show="sidebarOpen" class="flex items-center pb-4 mb-4 border-b border-uttop-navy-light">
+          <img src="https://randomuser.me/api/portraits/men/85.jpg" alt="Admin Avatar" class="w-10 h-10 rounded-full mr-3 border-2 border-uttop-mint shadow-md">
+          <div>
+            <p class="font-medium text-sm">Admin User</p>
+            <p class="text-xs text-gray-300">admin@weft.com</p>
+          </div>
+        </div>
+        <button class="w-full bg-uttop-purple hover:bg-opacity-90 text-white py-2 px-4 rounded transition-colors flex items-center justify-center">
+          <i class="fas fa-sign-out-alt" :class="sidebarOpen ? 'mr-2' : ''"></i>
+          <span x-show="sidebarOpen">Logout</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden bg-white">
+      <!-- Topbar -->
+      <header class="bg-white shadow-sm px-6 py-4 flex justify-between items-center border-b border-gray-200">
+        <div class="flex items-center">
+          <div class="text-lg font-semibold text-uttop-navy">
+            <span x-text="activeTab.charAt(0).toUpperCase() + activeTab.slice(1)"></span>
+            <span x-show="activeTab === 'management'" x-text="' / ' + activeSection.replace('-', ' ').replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())"></span>
+          </div>
+        </div>
+        <div class="flex items-center space-x-6">
+          <!-- Search -->
+          <div class="relative">
+            <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent transition-all w-48">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+          </div>
+          <!-- Notification Icon -->
+          <div class="relative">
+            <button class="text-gray-600 hover:text-uttop-navy relative">
+              <i class="fas fa-bell text-lg"></i>
+              <span class="absolute -top-2 -right-2 w-5 h-5 bg-uttop-pink text-white rounded-full text-xs flex items-center justify-center">3</span>
+            </button>
+          </div>
+          <!-- User Avatar -->
+          <div class="relative">
+            <img src="https://randomuser.me/api/portraits/men/85.jpg" alt="User Avatar" class="w-10 h-10 rounded-full cursor-pointer shadow-sm border-2 border-uttop-mint hover:border-uttop-yellow transition-colors">
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="flex-1 p-6 overflow-y-auto">
+        <!-- Dashboard Content -->
+        <div x-show="activeTab === 'dashboard'" class="animate-fade-in">
+          <h1 class="text-2xl font-bold mb-6 text-uttop-navy">Dashboard Overview</h1>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow border-l-4 border-uttop-mint">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h2 class="text-lg font-semibold text-uttop-navy">Total Users</h2>
+                  <p class="text-3xl font-bold mt-2">254</p>
+                </div>
+                <div class="p-3 bg-uttop-mint bg-opacity-20 rounded-lg">
+                  <i class="fas fa-user-friends text-xl text-uttop-mint"></i>
+                </div>
+              </div>
+              <p class="text-green-600 mt-4 text-sm flex items-center">
+                <i class="fas fa-arrow-up mr-1"></i> 12% increase this month
+              </p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow border-l-4 border-uttop-yellow">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h2 class="text-lg font-semibold text-uttop-navy">Active Sessions</h2>
+                  <p class="text-3xl font-bold mt-2">42</p>
+                </div>
+                <div class="p-3 bg-uttop-yellow bg-opacity-20 rounded-lg">
+                  <i class="fas fa-bolt text-xl text-uttop-yellow"></i>
+                </div>
+              </div>
+              <p class="text-gray-600 mt-4 text-sm flex items-center">
+                <i class="fas fa-minus mr-1"></i> Steady performance
+              </p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow border-l-4 border-uttop-purple">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h2 class="text-lg font-semibold text-uttop-navy">System Health</h2>
+                  <p class="text-3xl font-bold mt-2">99.8%</p>
+                </div>
+                <div class="p-3 bg-uttop-purple bg-opacity-20 rounded-lg">
+                  <i class="fas fa-heartbeat text-xl text-uttop-purple"></i>
+                </div>
+              </div>
+              <p class="text-green-600 mt-4 text-sm flex items-center">
+                <i class="fas fa-check-circle mr-1"></i> All systems operational
+              </p>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-lg font-semibold mb-4 text-uttop-navy">Recent Activity</h2>
+            <div class="space-y-4">
+              <div class="flex items-start p-3 hover:bg-gray-50 rounded-md transition-colors">
+                <div class="bg-uttop-mint bg-opacity-20 p-2 rounded-md mr-4">
+                  <i class="fas fa-user-plus text-uttop-mint"></i>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">New user registered</p>
+                  <p class="text-sm text-gray-600">John Doe created a new account</p>
+                </div>
+                <div class="text-sm text-gray-500">2 hours ago</div>
+              </div>
+              <div class="flex items-start p-3 hover:bg-gray-50 rounded-md transition-colors">
+                <div class="bg-uttop-yellow bg-opacity-20 p-2 rounded-md mr-4">
+                  <i class="fas fa-key text-uttop-yellow"></i>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">Password changed</p>
+                  <p class="text-sm text-gray-600">User updated their credentials</p>
+                </div>
+                <div class="text-sm text-gray-500">5 hours ago</div>
+              </div>
+              <div class="flex items-start p-3 hover:bg-gray-50 rounded-md transition-colors">
+                <div class="bg-uttop-purple bg-opacity-20 p-2 rounded-md mr-4">
+                  <i class="fas fa-user-shield text-uttop-purple"></i>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">Role updated</p>
+                  <p class="text-sm text-gray-600">User was granted admin privileges</p>
+                </div>
+                <div class="text-sm text-gray-500">1 day ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Management Content -->
+        <div x-show="activeTab === 'management'" class="animate-fade-in">
+          <!-- View All Researchers -->
+          <div x-show="activeSection === 'researchers'">
+            <div class="flex justify-between items-center mb-6">
+              <h1 class="text-2xl font-bold text-uttop-navy">Researcher Management</h1>
+              <button class="bg-uttop-mint hover:bg-opacity-90 text-uttop-navy font-medium py-2 px-4 rounded-md flex items-center transition-colors">
+                <i class="fas fa-plus mr-2"></i> Add Researcher
+              </button>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+              <div class="flex items-center justify-between p-4 border-b border-gray-200">
+                <div class="w-64">
+                  <div class="relative">
+                    <input type="text" placeholder="Search researchers..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                  </div>
+                </div>
+                <div class="flex space-x-2">
+                  <button class="bg-uttop-navy text-white p-2 rounded hover:bg-opacity-90 transition-colors">
+                    <i class="fas fa-filter"></i>
+                  </button>
+                  <button class="bg-uttop-navy text-white p-2 rounded hover:bg-opacity-90 transition-colors">
+                    <i class="fas fa-download"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Name
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Email
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Role
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10">
+                            <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/women/42.jpg" alt="">
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">
+                              Emma Johnson
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">emma.johnson@weft.com</div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-uttop-purple bg-opacity-20 text-uttop-purple">
+                          Senior Researcher
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          Active
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                          <button class="text-uttop-mint hover:text-uttop-navy">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                          <button class="text-uttop-pink hover:text-red-600">
+                            <i class="fas fa-trash-alt"></i>
+                          </button>
+                          <button class="text-uttop-yellow hover:text-uttop-navy">
+                            <i class="fas fa-key"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10">
+                            <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">
+                              Michael Chen
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">michael.chen@weft.com</div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-uttop-mint bg-opacity-20 text-uttop-navy">
+                          Researcher
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          Active
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                          <button class="text-uttop-mint hover:text-uttop-navy">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                          <button class="text-uttop-pink hover:text-red-600">
+                            <i class="fas fa-trash-alt"></i>
+                          </button>
+                          <button class="text-uttop-yellow hover:text-uttop-navy">
+                            <i class="fas fa-key"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10">
+                            <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/women/68.jpg" alt="">
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">
+                              Sophia Williams
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">sophia.williams@weft.com</div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-uttop-yellow bg-opacity-20 text-uttop-navy">
+                          Junior Researcher
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                          Pending
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                          <button class="text-uttop-mint hover:text-uttop-navy">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                          <button class="text-uttop-pink hover:text-red-600">
+                            <i class="fas fa-trash-alt"></i>
+                          </button>
+                          <button class="text-uttop-yellow hover:text-uttop-navy">
+                            <i class="fas fa-key"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="flex items-center justify-between px-6 py-3 bg-gray-50">
+                <div class="text-sm text-gray-700">
+                  Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">26</span> results
+                </div>
+                <div class="flex space-x-1">
+                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                    Previous
+                  </button>
+                  <button class="px-3 py-1 rounded border border-gray-300 bg-uttop-mint text-white">
+                    1
+                  </button>
+                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                    2
+                  </button>
+                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                    3
+                  </button>
+                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Create New User -->
+          <div x-show="activeSection === 'create-user'">
+            <div class="flex justify-between items-center mb-6">
+              <h1 class="text-2xl font-bold text-uttop-navy">Create New User</h1>
+              <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md flex items-center transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Users
+              </button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <form class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                    <input type="text" id="firstName" name="firstName" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                  </div>
+                  <div>
+                    <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                  </div>
+                </div>
+
+                <div>
+                  <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                  <input type="email" id="email" name="email" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <div class="relative">
+                      <input type="password" id="password" name="password" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                      <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                    <div class="relative">
+                      <input type="password" id="confirmPassword" name="confirmPassword" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                      <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                  <select id="role" name="role" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                    <option value="">Select a role</option>
+                    <option value="admin">Administrator</option>
+                    <option value="senior_researcher">Senior Researcher</option>
+                    <option value="researcher">Researcher</option>
+                    <option value="junior_researcher">Junior Researcher</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Additional Options</label>
+                  <div class="space-y-2">
+                    <div class="flex items-center">
+                      <input type="checkbox" id="sendEmail" name="sendEmail" class="rounded text-uttop-mint focus:ring-uttop-mint">
+                      <label for="sendEmail" class="ml-2 text-sm text-gray-700">Send welcome email with credentials</label>
+                    </div>
+                    <div class="flex items-center">
+                      <input type="checkbox" id="requirePasswordChange" name="requirePasswordChange" class="rounded text-uttop-mint focus:ring-uttop-mint">
+                      <label for="requirePasswordChange" class="ml-2 text-sm text-gray-700">Require password change on first login</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                  <button type="button" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+                    Cancel
+                  </button>
+                  <button type="submit" class="px-4 py-2 bg-uttop-mint text-uttop-navy font-medium rounded-md hover:bg-opacity-90 transition-colors">
+                    Create User
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Assign Roles -->
+          <div x-show="activeSection === 'assign-roles'">
+            <div class="flex justify-between items-center mb-6">
+              <h1 class="text-2xl font-bold text-uttop-navy">Assign User Roles</h1>
+              <div class="flex space-x-2">
+                <button class="bg-uttop-yellow hover:bg-opacity-90 text-uttop-navy py-2 px-4 rounded-md flex items-center transition-colors">
+                  <i class="fas fa-save mr-2"></i> Save Changes
+                </button>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+              <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                <div class="text-lg font-medium">Role Management</div>
+                <div class="flex space-x-2">
+                  <div class="relative">
+                    <input type="text" placeholder="Search users..." class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                  </div>
+                  <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                    <option value="">Filter by role</option>
+                    <option value="admin">Administrator</option>
+                    <option value="senior_researcher">Senior Researcher</option>
+                    <option value="researcher">Researcher</option>
+                    <option value="junior_researcher">Junior Researcher</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        User
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Current Role
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        New Role
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Last Updated
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10">
+                            <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/women/42.jpg" alt="">
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">Emma Johnson</div>
+                            <div class="text-sm text-gray-500">emma.johnson@weft.com</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-uttop-purple bg-opacity-20 text-uttop-purple">
+                          Senior Researcher
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <select class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                          <option value="admin">Administrator</option>
+                          <option value="senior_researcher" selected>Senior Researcher</option>
+                          <option value="researcher">Researcher</option>
+                          <option value="junior_researcher">Junior Researcher</option>
+                        </select>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        2023-10-15
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10">
+                            <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">Michael Chen</div>
+                            <div class="text-sm text-gray-500">michael.chen@weft.com</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-uttop-mint bg-opacity-20 text-uttop-navy">
+                          Researcher
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <select class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                          <option value="admin">Administrator</option>
+                          <option value="senior_researcher">Senior Researcher</option>
+                          <option value="researcher" selected>Researcher</option>
+                          <option value="junior_researcher">Junior Researcher</option>
+                        </select>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        2023-09-22
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10">
+                            <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/women/68.jpg" alt="">
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">Sophia Williams</div>
+                            <div class="text-sm text-gray-500">sophia.williams@weft.com</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-uttop-yellow bg-opacity-20 text-uttop-navy">
+                          Junior Researcher
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <select class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                          <option value="admin">Administrator</option>
+                          <option value="senior_researcher">Senior Researcher</option>
+                          <option value="researcher">Researcher</option>
+                          <option value="junior_researcher" selected>Junior Researcher</option>
+                        </select>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        2023-11-03
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="flex items-center justify-between px-6 py-3 bg-gray-50">
+                <div class="text-sm text-gray-700">
+                  Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">26</span> results
+                </div>
+                <div class="flex space-x-1">
+                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                    Previous
+                  </button>
+                  <button class="px-3 py-1 rounded border border-gray-300 bg-uttop-mint text-white">
+                    1
+                  </button>
+                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                    2
+                  </button>
+                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                    3
+                  </button>
+                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reset Passwords -->
+          <div x-show="activeSection === 'reset-password'">
+            <div class="flex justify-between items-center mb-6">
+              <h1 class="text-2xl font-bold text-uttop-navy">Reset User Passwords</h1>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <div class="bg-uttop-yellow bg-opacity-10 border-l-4 border-uttop-yellow p-4 mb-6">
+                <div class="flex">
+                  <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-uttop-yellow"></i>
+                  </div>
+                  <div class="ml-3">
+                    <h3 class="text-sm font-medium text-uttop-navy">Attention</h3>
+                    <div class="text-sm text-gray-700 mt-1">
+                      <p>Resetting a user's password will automatically invalidate their current password and send them a password reset link via email.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-6">
+                <label for="userSearch" class="block text-sm font-medium text-gray-700 mb-1">Find User</label>
+                <div class="relative">
+                  <input type="text" id="userSearch" name="userSearch" placeholder="Search for a user by name or email" class="w-full border border-gray-300 rounded-md py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                  <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+              </div>
+
+              <div class="mb-6">
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          User
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Last Password Change
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                              <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/women/42.jpg" alt="">
+                            </div>
+                            <div class="ml-4">
+                              <div class="text-sm font-medium text-gray-900">Emma Johnson</div>
+                              <div class="text-sm text-gray-500">emma.johnson@weft.com</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2023-11-10 (43 days ago)
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Active
+                          </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button class="flex items-center px-3 py-1 bg-uttop-yellow text-uttop-navy rounded hover:bg-opacity-90 transition-colors">
+                            <i class="fas fa-key mr-2"></i> Reset Password
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                              <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+                            </div>
+                            <div class="ml-4">
+                              <div class="text-sm font-medium text-gray-900">Michael Chen</div>
+                              <div class="text-sm text-gray-500">michael.chen@weft.com</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2023-12-05 (18 days ago)
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Active
+                          </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button class="flex items-center px-3 py-1 bg-uttop-yellow text-uttop-navy rounded hover:bg-opacity-90 transition-colors">
+                            <i class="fas fa-key mr-2"></i> Reset Password
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                              <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/women/68.jpg" alt="">
+                            </div>
+                            <div class="ml-4">
+                              <div class="text-sm font-medium text-gray-900">Sophia Williams</div>
+                              <div class="text-sm text-gray-500">sophia.williams@weft.com</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          Never changed (default password)
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            Pending
+                          </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button class="flex items-center px-3 py-1 bg-uttop-yellow text-uttop-navy rounded hover:bg-opacity-90 transition-colors">
+                            <i class="fas fa-key mr-2"></i> Reset Password
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Bulk Reset Section -->
+              <div class="border-t border-gray-200 pt-6 mt-6">
+                <h3 class="text-lg font-medium text-uttop-navy mb-4">Bulk Password Reset</h3>
+                <div class="flex flex-wrap items-center gap-4">
+                  <div class="w-full md:w-auto">
+                    <select class="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                      <option value="">Select user group</option>
+                      <option value="all">All Users</option>
+                      <option value="inactive">Inactive Users (30+ days)</option>
+                      <option value="researchers">All Researchers</option>
+                      <option value="admins">Administrators</option>
+                    </select>
+                  </div>
+                  <button class="px-4 py-2 bg-uttop-purple text-white rounded-md hover:bg-opacity-90 transition-colors">
+                    Bulk Reset Passwords
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Content -->
+        <div x-show="activeTab === 'settings'" class="animate-fade-in">
+          <h1 class="text-2xl font-bold mb-6 text-uttop-navy">Settings</h1>
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="border-b border-gray-200">
+              <nav class="flex">
+                <button class="px-6 py-4 hover:bg-gray-50 border-b-2 border-uttop-mint text-uttop-navy font-medium">
+                  General
+                </button>
+                <button class="px-6 py-4 hover:bg-gray-50 border-b-2 border-transparent hover:border-gray-300 text-gray-600">
+                  Security
+                </button>
+                <button class="px-6 py-4 hover:bg-gray-50 border-b-2 border-transparent hover:border-gray-300 text-gray-600">
+                  Notifications
+                </button>
+                <button class="px-6 py-4 hover:bg-gray-50 border-b-2 border-transparent hover:border-gray-300 text-gray-600">
+                  API
+                </button>
+              </nav>
+            </div>
+            
+            <div class="p-6">
+              <div class="max-w-3xl">
+                <div class="space-y-6">
+                  <div>
+                    <h3 class="text-lg font-medium text-uttop-navy mb-4">Account Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label for="settingsName" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <input type="text" id="settingsName" name="settingsName" value="Admin User" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                      </div>
+                      <div>
+                        <label for="settingsEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                        <input type="email" id="settingsEmail" name="settingsEmail" value="admin@weft.com" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-transparent">
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 class="text-lg font-medium text-uttop-navy mb-4">Interface Settings</h3>
+                    <div class="space-y-4">
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <div class="text-sm font-medium text-gray-900">Dark Mode</div>
+                          <div class="text-sm text-gray-500">Enable dark mode for the dashboard</div>
+                        </div>
+                        <div class="ml-4">
+                          <div class="w-12 h-6 rounded-full bg-gray-200 flex items-center p-1 cursor-pointer">
+                            <div class="w-4 h-4 rounded-full bg-white shadow-md"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <div class="text-sm font-medium text-gray-900">Compact Mode</div>
+                          <div class="text-sm text-gray-500">Show more content with reduced spacing</div>
+                        </div>
+                        <div class="ml-4">
+                          <div class="w-12 h-6 rounded-full bg-uttop-mint flex items-center p-1 cursor-pointer justify-end">
+                            <div class="w-4 h-4 rounded-full bg-white shadow-md"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <div class="text-sm font-medium text-gray-900">Notifications</div>
+                          <div class="text-sm text-gray-500">Enable browser notifications</div>
+                        </div>
+                        <div class="ml-4">
+                          <div class="w-12 h-6 rounded-full bg-uttop-mint flex items-center p-1 cursor-pointer justify-end">
+                            <div class="w-4 h-4 rounded-full bg-white shadow-md"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="pt-4 border-t border-gray-200 flex justify-end">
+                    <button class="py-2 px-4 bg-uttop-mint text-uttop-navy font-medium rounded-md hover:bg-opacity-90 transition-colors">
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Future Section Content Templates -->
+        <div x-show="activeTab === 'reports'" class="animate-fade-in">
+          <h1 class="text-2xl font-bold mb-6 text-uttop-navy">Reports</h1>
+          <div class="bg-white p-6 rounded-lg shadow-md text-center py-16">
+            <div class="w-20 h-20 bg-uttop-yellow bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-chart-bar text-uttop-yellow text-4xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Reports Dashboard</h3>
+            <p class="text-gray-600 mb-6">View and analyze system and user reports.</p>
+            <p class="text-gray-500">This section is coming soon. Reports will provide detailed insights into system usage and user activity.</p>
+            <button class="mt-6 bg-uttop-navy text-white py-2 px-6 rounded-md inline-flex items-center">
+              <i class="fas fa-bell mr-2"></i> Get notified when available
+            </button>
+          </div>
+        </div>
+
+        <!-- Analytics Content -->
+        <div x-show="activeTab === 'analytics'" class="animate-fade-in">
+          <h1 class="text-2xl font-bold mb-6 text-uttop-navy">Analytics</h1>
+          <div class="bg-white p-6 rounded-lg shadow-md text-center py-16">
+            <div class="w-20 h-20 bg-uttop-purple bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-chart-line text-uttop-purple text-4xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Analytics Center</h3>
+            <p class="text-gray-600 mb-6">Monitor trends and patterns in research data.</p>
+            <p class="text-gray-500">This section is under development. Analytics will help you identify trends and make data-driven decisions.</p>
+            <button class="mt-6 bg-uttop-purple text-white py-2 px-6 rounded-md inline-flex items-center">
+              <i class="fas fa-flask mr-2"></i> Join the beta program
+            </button>
+          </div>
+        </div>
+
+        <!-- Logs Content -->
+        <div x-show="activeTab === 'logs'" class="animate-fade-in">
+          <h1 class="text-2xl font-bold mb-6 text-uttop-navy">System Logs</h1>
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+              <div>
+                <h3 class="text-lg font-medium text-uttop-navy">System Activity Log</h3>
+                <p class="text-sm text-gray-500">Review recent system events and actions</p>
+              </div>
+              <div class="flex space-x-2">
+                <button class="bg-uttop-navy text-white p-2 rounded hover:bg-opacity-90 transition-colors">
+                  <i class="fas fa-filter"></i>
+                </button>
+                <button class="bg-uttop-navy text-white p-2 rounded hover:bg-opacity-90 transition-colors">
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP Address</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-12-23 09:45:22</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="flex-shrink-0 h-8 w-8">
+                          <img class="h-8 w-8 rounded-full" src="https://randomuser.me/api/portraits/men/85.jpg" alt="">
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">Admin User</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Login</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Successful login to admin dashboard</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">192.168.1.105</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-12-23 09:20:11</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="flex-shrink-0 h-8 w-8">
+                          <img class="h-8 w-8 rounded-full" src="https://randomuser.me/api/portraits/women/42.jpg" alt="">
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">Emma Johnson</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Update</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Changed user profile information</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">192.168.1.112</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-12-22 18:04:35</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="flex-shrink-0 h-8 w-8">
+                          <img class="h-8 w-8 rounded-full" src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">Michael Chen</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Error</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Failed login attempt (incorrect password)</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">192.168.1.108</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex items-center justify-between px-6 py-3 bg-gray-50">
+              <div class="text-sm text-gray-700">
+                Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">245</span> log entries
+              </div>
+              <div class="flex space-x-1">
+                <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                  Previous
+                </button>
+                <button class="px-3 py-1 rounded border border-gray-300 bg-uttop-mint text-white">
+                  1
+                </button>
+                <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                  2
+                </button>
+                <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                  3
+                </button>
+                <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html> 

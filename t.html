@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weft Project - Publications</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'uttop-navy': '#004159',
+                        'uttop-mint': '#5EDAD1',
+                        'uttop-yellow': '#F5D547',
+                        'uttop-pink': '#FF9BC2',
+                        'uttop-purple': '#6665DD',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-in-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'scroll-x': 'scrollX 25s linear infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        scrollX: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        }
+                    }
+                }
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.reveal').forEach(el => {
+                el.classList.add('active');
+            });
+        });
+    </script>
+    <style>
+        .animate-delay-100 { animation-delay: 100ms; }
+        .animate-delay-200 { animation-delay: 200ms; }
+        .animate-delay-300 { animation-delay: 300ms; }
+        .animate-delay-400 { animation-delay: 400ms; }
+        .animate-delay-500 { animation-delay: 500ms; }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <header class="bg-uttop-navy py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="text-white font-bold text-xl">Weft Project</div>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Home</a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Projects</a>
+                    <a href="#" class="text-white font-medium">Publications</a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Partners</a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Contact</a>
+                </nav>
+                <div class="md:hidden">
+                    <button type="button" class="text-white">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    
+    <section class="bg-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-base text-uttop-purple font-semibold tracking-wide uppercase reveal">Research & Publications</h1>
+                <p class="mt-2 text-4xl font-extrabold text-uttop-navy tracking-tight sm:text-5xl reveal">
+                    Our Scholarly Contributions
+                </p>
+                <p class="mt-4 max-w-3xl mx-auto text-xl text-gray-500 reveal">
+                    Explore our comprehensive collection of research publications, scholarly articles, and academic contributions advancing the field of weft technology.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="bg-gray-50 py-6 border-y border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="sm:flex sm:flex-wrap sm:items-center sm:justify-between">
+                <div class="w-full sm:w-auto mb-4 sm:mb-0">
+                    <label for="filter" class="block text-sm font-medium text-gray-700 mb-1">Filter by category</label>
+                    <div class="relative">
+                        <select id="filter" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-uttop-purple focus:border-uttop-purple sm:text-sm rounded-md">
+                            <option value="">All Categories</option>
+                            <option value="research">Research</option>
+                            <option value="technology">Technology</option>
+                            <option value="innovation">Innovation</option>
+                            <option value="review">Review</option>
+                            <option value="systems">Systems</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="w-full sm:w-auto mb-4 sm:mb-0">
+                    <label for="year" class="block text-sm font-medium text-gray-700 mb-1">Filter by year</label>
+                    <div class="relative">
+                        <select id="year" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-uttop-purple focus:border-uttop-purple sm:text-sm rounded-md">
+                            <option value="">All Years</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="w-full sm:w-auto mb-4 sm:mb-0">
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                    <div class="relative rounded-md shadow-sm">
+                        <input type="text" id="search" class="focus:ring-uttop-purple focus:border-uttop-purple block w-full pr-10 sm:text-sm border-gray-300 rounded-md" placeholder="Search publications...">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-8">
+                <div class="bg-gray-50 rounded-lg shadow-sm overflow-hidden border-l-4 border-uttop-mint transform transition duration-300 hover:shadow-md hover:translate-x-1 reveal">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-uttop-navy">Advanced Weft Techniques for Modern Applications</h3>
+                        <p class="mt-2 text-sm text-gray-500 flex items-center">
+                            <svg class="mr-1.5 h-4 w-4 text-uttop-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                             2024
+                        </p>
+                        <p class="mt-3 text-gray-600">This paper explores the innovative applications of weft technology in various domains including healthcare, manufacturing, and environmental monitoring.</p>
+                        
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-mint bg-opacity-20 text-uttop-navy">
+                                Research
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-yellow bg-opacity-20 text-uttop-navy">
+                                Technology
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-pink bg-opacity-20 text-uttop-navy">
+                                Innovation
+                            </span>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-between items-center">
+                            <div class="flex -space-x-2">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Dr. Sophie Martin">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Prof. Jean Dubois">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Dr. Marie Laurent">
+                            </div>
+                            <a href="#" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-uttop-navy bg-uttop-mint bg-opacity-20 hover:bg-opacity-30 transition-colors duration-300">
+                                Read Publication
+                                <svg class="ml-2 -mr-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="bg-gray-50 rounded-lg shadow-sm overflow-hidden border-l-4 border-uttop-yellow transform transition duration-300 hover:shadow-md hover:translate-x-1 reveal">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-uttop-navy">Weft Systems: A Comprehensive Review</h3>
+                        <p class="mt-2 text-sm text-gray-500 flex items-center">
+                            <svg class="mr-1.5 h-4 w-4 text-uttop-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Published in International Conference on Weft Systems, 2023
+                        </p>
+                        <p class="mt-3 text-gray-600">A comprehensive review of weft systems and their applications in various industries, with a focus on recent advancements and future directions.</p>
+                        
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-purple bg-opacity-20 text-uttop-navy">
+                                Review
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-mint bg-opacity-20 text-uttop-navy">
+                                Systems
+                            </span>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-between items-center">
+                            <div class="flex -space-x-2">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Prof. Jean Dubois">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Dr. Thomas Renard">
+                            </div>
+                            <a href="#" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-uttop-navy bg-uttop-yellow bg-opacity-20 hover:bg-opacity-30 transition-colors duration-300">
+                                Read Publication
+                                <svg class="ml-2 -mr-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="bg-gray-50 rounded-lg shadow-sm overflow-hidden border-l-4 border-uttop-purple transform transition duration-300 hover:shadow-md hover:translate-x-1 reveal">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-uttop-navy">Multi-dimensional Weft Analysis in Data Science</h3>
+                        <p class="mt-2 text-sm text-gray-500 flex items-center">
+                            <svg class="mr-1.5 h-4 w-4 text-uttop-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Published in Data Science Review, 2024
+                        </p>
+                        <p class="mt-3 text-gray-600">An exploration of how weft technology can enhance multi-dimensional data analysis techniques and improve predictive modeling outcomes.</p>
+                        
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-purple bg-opacity-20 text-uttop-navy">
+                                Research
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-pink bg-opacity-20 text-uttop-navy">
+                                Data Science
+                            </span>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-between items-center">
+                            <div class="flex -space-x-2">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Dr. Clara Kim">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Dr. Sophie Martin">
+                            </div>
+                            <a href="#" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-uttop-navy bg-uttop-purple bg-opacity-20 hover:bg-opacity-30 transition-colors duration-300">
+                                Read Publication
+                                <svg class="ml-2 -mr-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="bg-gray-50 rounded-lg shadow-sm overflow-hidden border-l-4 border-uttop-pink transform transition duration-300 hover:shadow-md hover:translate-x-1 reveal">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-uttop-navy">Applications of Weft Technology in Healthcare</h3>
+                        <p class="mt-2 text-sm text-gray-500 flex items-center">
+                            <svg class="mr-1.5 h-4 w-4 text-uttop-pink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Published in Journal of Medical Technology, 2023
+                        </p>
+                        <p class="mt-3 text-gray-600">This paper examines how weft technology is transforming healthcare delivery, patient monitoring, and medical diagnostics.</p>
+                        
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-pink bg-opacity-20 text-uttop-navy">
+                                Healthcare
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-yellow bg-opacity-20 text-uttop-navy">
+                                Technology
+                            </span>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-between items-center">
+                            <div class="flex -space-x-2">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Dr. Marie Laurent">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Dr. Akiko Tanaka">
+                            </div>
+                            <a href="#" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-uttop-navy bg-uttop-pink bg-opacity-20 hover:bg-opacity-30 transition-colors duration-300">
+                                Read Publication
+                                <svg class="ml-2 -mr-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="bg-gray-50 rounded-lg shadow-sm overflow-hidden border-l-4 border-uttop-mint transform transition duration-300 hover:shadow-md hover:translate-x-1 reveal">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-uttop-navy">Sustainable Weft Implementation in Manufacturing</h3>
+                        <p class="mt-2 text-sm text-gray-500 flex items-center">
+                            <svg class="mr-1.5 h-4 w-4 text-uttop-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Published in Sustainable Manufacturing Journal, 2022
+                        </p>
+                        <p class="mt-3 text-gray-600">A study on implementing weft technology in manufacturing processes to reduce environmental impact and improve efficiency.</p>
+                        
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-mint bg-opacity-20 text-uttop-navy">
+                                Sustainability
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-yellow bg-opacity-20 text-uttop-navy">
+                                Manufacturing
+                            </span>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-between items-center">
+                            <div class="flex -space-x-2">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Dr. Thomas Renard">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Prof. Anna Schmidt">
+                            </div>
+                            <a href="#" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-uttop-navy bg-uttop-mint bg-opacity-20 hover:bg-opacity-30 transition-colors duration-300">
+                                Read Publication
+                                <svg class="ml-2 -mr-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="bg-gray-50 rounded-lg shadow-sm overflow-hidden border-l-4 border-uttop-yellow transform transition duration-300 hover:shadow-md hover:translate-x-1 reveal">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-uttop-navy">Theoretical Foundations of Modern Weft Architecture</h3>
+                        <p class="mt-2 text-sm text-gray-500 flex items-center">
+                            <svg class="mr-1.5 h-4 w-4 text-uttop-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Published in Theoretical Computer Science, 2023
+                        </p>
+                        <p class="mt-3 text-gray-600">An exploration of the mathematical and theoretical underpinnings of weft architecture and system design principles.</p>
+                        
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-purple bg-opacity-20 text-uttop-navy">
+                                Theory
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-uttop-mint bg-opacity-20 text-uttop-navy">
+                                Architecture
+                            </span>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-between items-center">
+                            <div class="flex -space-x-2">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Prof. Jean Dubois">
+                                <img class="w-8 h-8 rounded-full ring-2 ring-white" src="/api/placeholder/32/32" alt="Author: Dr. Michael Chen">
+                            </div>
+                            <a href="#" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-uttop-navy bg-uttop-yellow bg-opacity-20 hover:bg-opacity-30 transition-colors duration-300">
+                                Read Publication
+                                <svg class="ml-2 -mr-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="mt-12 flex justify-center">
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <span class="sr-only">Previous</span>
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </a>
+                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-uttop-navy text-sm font-medium text-white hover:bg-uttop-purple">
+                        1
+                    </a>
+                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        2
+                    </a>
+                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        3
+                    </a>
+                    <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <span class="sr-only">Next</span>
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </nav>
+            </div>
+            
+        </div>
+    </section>
+
+</body>
+</html>

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEFT Admin Dashboard - LGP Research Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js"
+      defer
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      rel="stylesheet"
+    />
+   
+    <style>
+        /* Custom colors from config */
+        .bg-uttop-navy { background-color: #004159; }
+        .bg-uttop-mint { background-color: #5EDAD1; }
+        .bg-uttop-yellow { background-color: #F5D547; }
+        .bg-uttop-pink { background-color: #FF9BC2; }
+        .bg-uttop-purple { background-color: #6665DD; }
+        
+        .text-uttop-navy { color: #004159; }
+        .text-uttop-mint { color: #5EDAD1; }
+        .text-uttop-yellow { color: #F5D547; }
+        .text-uttop-pink { color: #FF9BC2; }
+        .text-uttop-purple { color: #6665DD; }
+        
+        .border-uttop-navy { border-color: #004159; }
+        .border-uttop-mint { border-color: #5EDAD1; }
+        
+        .hover\:bg-uttop-navy:hover { background-color: #004159; }
+        .hover\:bg-uttop-mint:hover { background-color: #5EDAD1; }
+        
+        /* Animations */
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .animate-slide-up {
+            animation: slideUp 0.6s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Custom styling */
+        .sidebar-item.active {
+            border-left-width: 4px;
+            border-color: #5EDAD1;
+            background-color: rgba(0, 65, 89, 0.1);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div x-data="{ 
+        sidebarOpen: true, 
+        activeSection: 'researchers',
+        activeTab: 'view-researchers',
+        researchers: [
+            { id: 1, name: 'Dr. Emma Johnson', role: 'Lead Researcher', email: 'emma.johnson@lgp.edu', status: 'Active' },
+            { id: 2, name: 'Prof. Michael Chen', role: 'Senior Researcher', email: 'michael.chen@lgp.edu', status: 'Active' },
+            { id: 3, name: 'Dr. Sarah Ahmed', role: 'Research Associate', email: 'sarah.ahmed@lgp.edu', status: 'Inactive' },
+            { id: 4, name: 'Dr. Robert Garcia', role: 'Visiting Researcher', email: 'robert.garcia@lgp.edu', status: 'Active' },
+            { id: 5, name: 'Dr. Aisha Patel', role: 'Postdoctoral Fellow', email: 'aisha.patel@lgp.edu', status: 'Active' }
+        ],
+        userModalOpen: false,
+        currentUser: null,
+        roles: ['Administrator', 'Lead Researcher', 'Senior Researcher', 'Research Associate', 'Postdoctoral Fellow', 'Visiting Researcher'],
+        
+        openUserModal(user = null) {
+            if (user) {
+                this.currentUser = { ...user };
+            } else {
+                this.currentUser = { id: this.researchers.length + 1, name: '', role: '', email: '', status: 'Active' };
+            }
+            this.userModalOpen = true;
+        },
+        
+        saveUser() {
+            if (!this.currentUser.id) {
+                this.currentUser.id = this.researchers.length + 1;
+                this.researchers.push({ ...this.currentUser });
+            } else {
+                const index = this.researchers.findIndex(r => r.id === this.currentUser.id);
+                if (index !== -1) {
+                    this.researchers[index] = { ...this.currentUser };
+                }
+            }
+            this.userModalOpen = false;
+        },
+        
+        resetPassword(userId) {
+            alert('Password reset email sent for user ID: ' + userId);
+        },
+        
+        changeTab(tab) {
+            this.activeTab = tab;
+        },
+        
+        changeSection(section) {
+            this.activeSection = section;
+            // Set default tab for each section
+            if (section === 'researchers') this.activeTab = 'view-researchers';
+            if (section === 'projects') this.activeTab = 'view-projects';
+            if (section === 'publications') this.activeTab = 'view-publications';
+            if (section === 'settings') this.activeTab = 'general-settings';
+        }
+    }" class="min-h-screen flex flex-col lg:flex-row">
+    
+        <!-- Sidebar -->
+        <div :class="{'lg:w-64': sidebarOpen, 'lg:w-20': !sidebarOpen}" class="bg-uttop-navy text-white transition-all duration-300 z-10">
+            <!-- Mobile Header -->
+            <div class="lg:hidden flex items-center justify-between p-4 border-b border-uttop-mint">
+                <div class="flex items-center space-x-2">
+                    <img src="/api/placeholder/40/40" alt="WEFT Logo" class="h-10 w-10">
+                    <span class="text-lg font-bold">WEFT Admin</span>
+                </div>
+                <button @click="sidebarOpen = !sidebarOpen" class="p-2 rounded-md hover:bg-uttop-mint hover:text-uttop-navy">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        
+            <!-- Sidebar Content -->
+            <div :class="{'hidden': !sidebarOpen && window.innerWidth < 1024}" class="flex flex-col h-full">
+                <!-- Logo and Toggle -->
+                <div class="hidden lg:flex items-center p-4 border-b border-uttop-mint">
+                    <div class="flex items-center space-x-2">
+                        <img src="/api/placeholder/40/40" alt="WEFT Logo" class="h-10 w-10">
+                        <span :class="{'hidden': !sidebarOpen}" class="text-lg font-bold transition-all duration-300">WEFT Admin</span>
+                    </div>
+                    <button @click="sidebarOpen = !sidebarOpen" class="ml-auto p-2 rounded-md hover:bg-uttop-mint hover:text-uttop-navy">
+                        <i :class="sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'" class="fas"></i>
+                    </button>
+                </div>
+                
+                <!-- Navigation Items -->
+                <div class="flex-grow overflow-y-auto pt-2">
+                    <div class="px-4 py-2" :class="{'text-center': !sidebarOpen}">
+                        <span :class="{'hidden': !sidebarOpen}" class="text-xs uppercase tracking-wider text-gray-400">Main</span>
+                    </div>
+                
+                    <!-- Dashboard -->
+                    <a href="#" class="sidebar-item flex items-center px-4 py-3 hover:bg-uttop-navy transition-colors" :class="{'justify-center': !sidebarOpen}">
+                        <i class="fas fa-tachometer-alt text-uttop-mint"></i>
+                        <span :class="{'hidden': !sidebarOpen, 'ml-3': sidebarOpen}" class="transition-all duration-300">Dashboard</span>
+                    </a>
+                    
+                    <!-- Researchers Management -->
+                    <a href="#" @click.prevent="changeSection('researchers')" 
+                       class="sidebar-item flex items-center px-4 py-3 hover:bg-uttop-navy transition-colors" 
+                       :class="{'justify-center': !sidebarOpen, 'active': activeSection === 'researchers'}">
+                        <i class="fas fa-users text-uttop-mint"></i>
+                        <span :class="{'hidden': !sidebarOpen, 'ml-3': sidebarOpen}" class="transition-all duration-300">Researchers</span>
+                    </a>
+                    
+                    <!-- Projects Management (Future Section) -->
+                    <a href="#" @click.prevent="changeSection('projects')" 
+                       class="sidebar-item flex items-center px-4 py-3 hover:bg-uttop-navy transition-colors" 
+                       :class="{'justify-center': !sidebarOpen, 'active': activeSection === 'projects'}">
+                        <i class="fas fa-project-diagram text-uttop-mint"></i>
+                        <span :class="{'hidden': !sidebarOpen, 'ml-3': sidebarOpen}" class="transition-all duration-300">Projects</span>
+                    </a>
+                    
+                    <!-- Publications Management (Future Section) -->
+                    <a href="#" @click.prevent="changeSection('publications')" 
+                       class="sidebar-item flex items-center px-4 py-3 hover:bg-uttop-navy transition-colors" 
+                       :class="{'justify-center': !sidebarOpen, 'active': activeSection === 'publications'}">
+                        <i class="fas fa-book text-uttop-mint"></i>
+                        <span :class="{'hidden': !sidebarOpen, 'ml-3': sidebarOpen}" class="transition-all duration-300">Publications</span>
+                    </a>
+                    
+                    <div class="px-4 py-2 mt-6" :class="{'text-center': !sidebarOpen}">
+                        <span :class="{'hidden': !sidebarOpen}" class="text-xs uppercase tracking-wider text-gray-400">System</span>
+                    </div>
+                    
+                    <!-- Settings (Future Section) -->
+                    <a href="#" @click.prevent="changeSection('settings')" 
+                       class="sidebar-item flex items-center px-4 py-3 hover:bg-uttop-navy transition-colors" 
+                       :class="{'justify-center': !sidebarOpen, 'active': activeSection === 'settings'}">
+                        <i class="fas fa-cog text-uttop-mint"></i>
+                        <span :class="{'hidden': !sidebarOpen, 'ml-3': sidebarOpen}" class="transition-all duration-300">Settings</span>
+                    </a>
+                </div>
+                
+                <!-- User Profile -->
+                <div class="border-t border-uttop-mint p-4">
+                    <div class="flex items-center" :class="{'justify-center': !sidebarOpen}">
+                        <div class="w-8 h-8 rounded-full bg-uttop-purple flex items-center justify-center">
+                            <span class="text-white font-medium">A</span>
+                        </div>
+                        <div :class="{'hidden': !sidebarOpen, 'ml-3': sidebarOpen}" class="transition-all duration-300">
+                            <div class="text-sm font-medium">Admin User</div>
+                            <div class="text-xs text-gray-300">admin@lgp.edu</div>
+                        </div>
+                        <button :class="{'hidden': !sidebarOpen, 'ml-auto': sidebarOpen}" class="text-gray-300 hover:text-white">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1">
+            <!-- Top Navigation -->
+            <div class="bg-white shadow-sm">
+                <div class="flex items-center justify-between h-16 px-4">
+                    <div class="flex items-center">
+                        <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="ml-4">
+                            <h1 class="text-xl font-semibold text-uttop-navy">
+                                <template x-if="activeSection === 'researchers'">Researchers Management</template>
+                                <template x-if="activeSection === 'projects'">Projects Management</template>
+                                <template x-if="activeSection === 'publications'">Publications Management</template>
+                                <template x-if="activeSection === 'settings'">Settings</template>
+                            </h1>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button class="p-2 rounded-md text-gray-600 hover:bg-gray-100">
+                            <i class="fas fa-bell"></i>
+                        </button>
+                        <button class="p-2 rounded-md text-gray-600 hover:bg-gray-100">
+                            <i class="fas fa-question-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Content -->
+            <div class="p-6">
+                <!-- Researchers Management Section -->
+                <div x-show="activeSection === 'researchers'" class="animate-fade-in">
+                    <!-- Tabs -->
+                    <div class="mb-6 border-b border-gray-200">
+                        <ul class="flex flex-wrap -mb-px">
+                            <li class="mr-2">
+                                <button @click="changeTab('view-researchers')" 
+                                    :class="{'border-b-2 border-uttop-mint text-uttop-navy': activeTab === 'view-researchers', 'text-gray-500 hover:text-uttop-navy': activeTab !== 'view-researchers'}" 
+                                    class="inline-flex items-center px-4 py-2 font-medium">
+                                    <i class="fas fa-list mr-2"></i> View All Researchers
+                                </button>
+                            </li>
+                            <li class="mr-2">
+                                <button @click="changeTab('create-user')" 
+                                    :class="{'border-b-2 border-uttop-mint text-uttop-navy': activeTab === 'create-user', 'text-gray-500 hover:text-uttop-navy': activeTab !== 'create-user'}" 
+                                    class="inline-flex items-center px-4 py-2 font-medium">
+                                    <i class="fas fa-user-plus mr-2"></i> Create New User
+                                </button>
+                            </li>
+                            <li class="mr-2">
+                                <button @click="changeTab('assign-roles')" 
+                                    :class="{'border-b-2 border-uttop-mint text-uttop-navy': activeTab === 'assign-roles', 'text-gray-500 hover:text-uttop-navy': activeTab !== 'assign-roles'}" 
+                                    class="inline-flex items-center px-4 py-2 font-medium">
+                                    <i class="fas fa-user-tag mr-2"></i> Assign Roles
+                                </button>
+                            </li>
+                            <li>
+                                <button @click="changeTab('reset-passwords')" 
+                                    :class="{'border-b-2 border-uttop-mint text-uttop-navy': activeTab === 'reset-passwords', 'text-gray-500 hover:text-uttop-navy': activeTab !== 'reset-passwords'}" 
+                                    class="inline-flex items-center px-4 py-2 font-medium">
+                                    <i class="fas fa-key mr-2"></i> Reset Passwords
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- View All Researchers Tab -->
+                    <div x-show="activeTab === 'view-researchers'" class="tab-content active">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-lg font-semibold text-uttop-navy">Researcher List</h2>
+                                <div class="flex space-x-2">
+                                    <div class="relative">
+                                        <input type="text" placeholder="Search researchers..." 
+                                            class="px-4 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-uttop-mint">
+                                        <div class="absolute left-3 top-2.5 text-gray-400">
+                                            <i class="fas fa-search"></i>
+                                        </div>
+                                    </div>
+                                    <button @click="openUserModal()" class="px-4 py-2 bg-uttop-navy text-white rounded-md hover:bg-uttop-purple transition-colors">
+                                        <i class="fas fa-plus mr-2"></i> Add Researcher
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white">
+                                    <thead>
+                                        <tr class="bg-gray-100 text-left text-gray-600 text-sm">
+                                            <th class="py-3 px-4 font-medium">ID</th>
+                                            <th class="py-3 px-4 font-medium">Name</th>
+                                            <th class="py-3 px-4 font-medium">Role</th>
+                                            <th class="py-3 px-4 font-medium">Email</th>
+                                            <th class="py-3 px-4 font-medium">Status</th>
+                                            <th class="py-3 px-4 font-medium">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template x-for="researcher in researchers" :key="researcher.id">
+                                            <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                                <td class="py-3 px-4" x-text="researcher.id"></td>
+                                                <td class="py-3 px-4" x-text="researcher.name"></td>
+                                                <td class="py-3 px-4" x-text="researcher.role"></td>
+                                                <td class="py-3 px-4" x-text="researcher.email"></td>
+                                                <td class="py-3 px-4">
+                                                    <span :class="researcher.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'" 
+                                                          class="px-2 py-1 text-xs rounded-full" x-text="researcher.status"></span>
+                                                </td>
+                                                <td class="py-3 px-4">
+                                                    <div class="flex space-x-2">
+                                                        <button @click="openUserModal(researcher)" class="text-blue-500 hover:text-blue-700">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button @click="resetPassword(researcher.id)" class="text-yellow-500 hover:text-yellow-700">
+                                                            <i class="fas fa-key"></i>
+                                                        </button>
+                                                        <button class="text-red-500 hover:text-red-700">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="mt-4 flex justify-between items-center">
+                                <div class="text-gray-500 text-sm">
+                                    Showing <span x-text="researchers.length"></span> researchers
+                                </div>
+                                <div class="flex space-x-1">
+                                    <button class="px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-50">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button class="px-3 py-1 border border-gray-300 rounded-md bg-uttop-navy text-white">1</button>
+                                    <button class="px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-50">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Create New User Tab -->
+                    <div x-show="activeTab === 'create-user'" class="tab-content">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h2 class="text-lg font-semibold text-uttop-navy mb-6">Create New Researcher</h2>
+                            
+                            <form @submit.prevent="saveUser()" class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                        <input type="text" x-model="currentUser ? currentUser.name : ''" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-uttop-mint">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                        <input type="email" x-model="currentUser ? currentUser.email : ''" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-uttop-mint">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                        <select x-model="currentUser ? currentUser.role : ''" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-uttop-mint">
+                                            <option value="">Select a role</option>
+                                            <template x-for="role in roles" :key="role">
+                                                <option :value="role" x-text="role"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                        <select x-model="currentUser ? currentUser.status : 'Active'" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-uttop-mint">
+                                            <option value="Active">Active</option>
+                                            <option value="Inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                        <input type="password" placeholder="Auto-generated if left blank"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-uttop-mint">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                                        <input type="password" placeholder="Auto-generated if left blank"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-uttop-mint">
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end space-x-3">
+                                    <button type="button" @click="changeTab('view-researchers')" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="px-4 py-2 bg-uttop-navy text-white rounded-md hover:bg-uttop-purple transition-colors">
+                                        <i class="fas fa-user-plus mr-2"></i> Create User
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Assign Roles Tab -->
+                    <div x-show="activeTab === 'assign-roles'" class="tab-content">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h2 class="text-lg font-semibold text-uttop-navy mb-6">Assign Roles to Researchers</h2>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white">
+                                    <thead>
+                                        <tr class="bg-gray-100 text-left text-gray-600 text-sm">
+                                            <th class="py-3 px-4 font-medium">Name</th>
+                                            <th class="py-3 px-4 font-medium">Email</th>
+                                            <th class="py-3 px-4 font-medium">Current Role</th>
+                                            <th class="py-3 px-4 font-medium">New Role</th>
+                                            <th class="py-3 px-4 font-medium">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template x-for="researcher in researchers" :key="researcher.id">
+                                            <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                                <td class="py-3 px-4" x-text="researcher.name"></td>
+                                                <td class="py-3 px-4" x-text="researcher.email"></td>
+                                                <td class="py-3 px-4" x-text="researcher.role"></td>
+                                                <td class="py-3 px-4">
+                                                    <select :id="'role-' + researcher.id" 
+                                                        class="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-uttop-mint focus:border-uttop-mint">
+                                                        <option value="">Select a role</option>
+                                                        <template x-for="role in roles" :key="role">
+                                                            <option :value="role" :selected="role === researcher.role" x-text="role"></option>
+                                                        </template>
+                                                    </select>
+                                                </td>
+                                                <td class="py-3 px-4">
+                                                    <button class="px-3 py-1 bg-uttop-mint text-uttop-navy rounded-md hover:bg-uttop-yellow transition-colors">
+                                                        Update Role
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reset Passwords Tab -->
+                    <div x-show="activeTab === 'reset-passwords'" class="tab-content">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h2 class="text-lg font-semibold text-uttop-navy mb-6">Reset Researcher Passwords</h2>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white">
+                                    <thead>
+                                        <tr class="bg-gray-100 text-left text-gray-600 text-sm">
+                                            <th class="py-3 px-4 font-medium">Name</th>
+                                            <th class="py-3 px-4 font-medium">Email</th>
+                                            <th class="py-3 px-4 font-medium">Role</th>
+                                            <th class="py-3 px-4 font-medium">Last Password Reset</th>
+                                            <th class="py-3 px-4 font-medium">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template x-for="researcher in researchers" :key="researcher.id">
+                                            <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                                <td class="py-3 px-4" x-text="researcher.name"></td>
+                                                <td class="py-3 px-4" x-text="researcher.email"></td>
+                                                <td class="py-3 px-4" x-text="researcher.role"></td>
+                                                <td class="py-3 px-4">Never</td>
+                                                <td class="py-3 px-4">
+                                                    <button @click="resetPassword(researcher.id)" class="px-3 py-1 bg-uttop-yellow text-uttop-navy rounded-md hover:bg-uttop-pink transition-colors">
+                                                        <i class="fas fa-key mr-1"></i> Reset Password
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Projects Management Section (Future Section) -->
+                <div x-show="activeSection === 'projects'" class="animate-fade-in">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-lg font-semibold text-uttop-navy">Projects Management</h2>
+                            <button class="px-4 py-2 bg-uttop-navy text-white rounded-md hover:bg-uttop-purple transition-colors">
+                                <i class="fas fa-plus mr-2"></i> Add New Project
+                            </button>
+                        </div>
+                        
+                        <!-- Project Content Placeholder -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-uttop-navy text-white mb-4">
+                                <i class="fas fa-project-diagram text-2xl"></i>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Projects Management Module</h3>
+                            <p class="text-gray-500 mb-4">This section is coming soon and will allow you to manage research projects.</p>
+                            <button class="px-4 py-2 bg-uttop-mint text-uttop-navy rounded-md hover:bg-uttop-yellow transition-colors">
+                                <i class="fas fa-wrench mr-2"></i> Set Up Projects Module
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Publications Management Section (Future Section) -->
+                <div x-show="activeSection === 'publications'" class="animate-fade-in">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-lg font-semibold text-uttop-navy">Publications Management</h2>
+                            <button class="px-4 py-2 bg-uttop-navy text-white rounded-md hover:bg-uttop-purple transition-colors">
+                                <i class="fas fa-plus mr-2"></i> Add New Publication
+                            </button>
+                        </div>
+                        
+                        <!-- Publications Content Placeholder -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-uttop-navy text-white mb-4">
+                                <i class="fas fa-book text-2xl"></i>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Publications Management Module</h3>
+                            <p class="text-gray-500 mb-4">This section is coming soon and will allow you to manage research publications.</p>
+                            <button class="px-4 py-2 bg-uttop-mint text-uttop-navy rounded-md hover:bg-uttop-yellow transition-colors">
+                                <i class="fas fa-wrench mr-2"></i> Set Up Publications Module
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Settings Section (Future Section) -->
+                <div x-show="activeSection === 'settings'" class="animate-fade-in">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-lg font-semibold text-uttop-navy">System Settings</h2>
+                            <button class="px-4 py-2 bg-uttop-navy text-white rounded-md hover:bg-uttop-purple transition-colors">
+                                <i class="fas fa-save mr-2"></i> Save Changes
+                            </button>
+                        </div>
+                        
+                        <!-- Settings Content Placeholder -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-uttop-navy text-white mb-4">
+                                <i class="fas fa-cog text-2xl"></i>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Settings Module</h3>
+                            <p class="text-gray-500 mb-4">This section is coming soon and will allow you to configure system settings.</p>
+                            <button class="px-4 py-2 bg-uttop-mint text-uttop-navy rounded-md hover:bg-uttop-yellow transition-colors">
+                                <i class="fas fa-wrench mr-2"></i> Set Up Settings Module
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- User Modal -->
+    <div x-show="userModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center">
+            <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" @click="userModalOpen = false"></div>
+            
+            <div class="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-uttop-navy" x-text="currentUser && currentUser.id ? 'Edit Researcher' : 'Add New Researcher'"></h3>
+                    <button @click="userModalOpen = false" class="text-gray-400 hover:text-gray-500">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="mt-4">
+                    <form @submit.prevent="saveUser()" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                            <input type="text" x-model="currentUser.name" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-uttop-mint">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" x-model="currentUser.email" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-uttop-mint">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                            <select x-model="currentUser.role" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-uttop-mint">
+                                <option value="">Select a role</option>
+                                <template x-for="role in roles" :key="role">
+                                    <option :value="role" x-text="role"></option>
+                                </template>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select x-model="currentUser.status" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-uttop-mint">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                        
+                        <div x-show="!currentUser.id">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <input type="password" placeholder="Auto-generated if left blank"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uttop-mint focus:border-uttop-mint">
+                            <p class="mt-1 text-xs text-gray-500">Leave blank to auto-generate a secure password.</p>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3 mt-6">
+                            <button type="button" @click="userModalOpen = false" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-4 py-2 bg-uttop-navy text-white rounded-md hover:bg-uttop-purple transition-colors">
+                                <i class="fas fa-save mr-2"></i> <span x-text="currentUser && currentUser.id ? 'Update' : 'Create'"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Additional JavaScript functionalities can be added here
+        document.addEventListener('alpine:init', () => {
+            // You can add more complex functionality here if needed
+        });
+    </script>
+</body>
+</html>
